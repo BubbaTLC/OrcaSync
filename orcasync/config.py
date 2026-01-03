@@ -142,8 +142,8 @@ class Config:
         discovered = self.discover_orcaslicer_paths()
         
         # Use discovered paths if available, otherwise fall back to defaults
+        # Only sync user paths by default (system paths disabled)
         user_paths = [str(p) for p in discovered["user"]] if discovered["user"] else [str(default_paths["user"])]
-        system_paths = [str(p) for p in discovered["system"]] if discovered["system"] else [str(default_paths["system"])]
         
         return {
             "repository_url": "",
@@ -151,7 +151,7 @@ class Config:
             "branch_prefix": "",
             "branch_postfix": "",
             "user_paths": user_paths,
-            "system_paths": system_paths,
+            "system_paths": [],  # Disabled by default - only sync user profiles
             "sync_interval": 0,  # 0 = manual only
             "auto_commit": True,
             "commit_message_template": "Sync from {hostname} - {timestamp}",
