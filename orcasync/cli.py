@@ -25,10 +25,11 @@ def main():
 
 @main.command()
 @click.option("--config", "-c", type=click.Path(), help="Path to config file")
-def init(config: Optional[str]):
+@click.option("--profile", "-p", help="Profile name to use")
+def init(config: Optional[str], profile: Optional[str]):
     """Initialize OrcaSync configuration and repository."""
     config_path = Path(config) if config else None
-    cfg = Config(config_path)
+    cfg = Config(config_path, profile)
     
     # Check if already configured
     if cfg.config_path.exists():
@@ -39,6 +40,23 @@ def init(config: Optional[str]):
     # Interactive configuration
     console.print("[bold]OrcaSync Initialization[/bold]\n")
     
+    # Discover OrcaSlicer paths
+    console.print("[blue]Discovering OrcaSlicer installation...[/blue]")
+    discovered = Config.discover_orcaslicer_paths()
+    
+    if discovered["user"] or discovered["system"]:
+        console.print("[green]✓[/green] Found OrcaSlicer profiles:")
+        if discovered["user"]:
+            for path in discovered["user"]:
+                console.print(f"  User:   {path}")
+        if discovered["system"]:
+            for path in discovered["system"]:
+                console.print(f"  System: {path}")
+        console.print()
+    else:
+        console.print("[yellow]⚠[/yellow] No OrcaSlicer profiles found in standard locations")
+        console.print("  You can specify custom paths manually\n")
+    
     repo_url = click.prompt("Git repository URL (leave empty for local-only)", default="", show_default=False)
     cfg.set("repository_url", repo_url)
     
@@ -47,8 +65,13 @@ def init(config: Optional[str]):
     
     # Ask about custom paths
     if click.confirm("Use custom OrcaSlicer profile paths?", default=False):
-        user_path = click.prompt("User profile path", default=str(cfg.user_paths[0]))
+        user_path = click.prompt("User profile path", default=str(cfg.user_paths[0]) if cfg.user_paths else "")
         cfg.set("user_paths", [user_path])
+    elif discovered["user"]:
+        # Use discovered paths
+        cfg.set("user_paths", [str(p) for p in discovered["user"]])
+        if discovered["system"]:
+            cfg.set("system_paths", [str(p) for p in discovered["system"]])
     
     # Save configuration
     cfg.save()
@@ -75,11 +98,12 @@ def init(config: Optional[str]):
 
 @main.command()
 @click.option("--config", "-c", type=click.Path(), help="Path to config file")
+@click.option("--profile", "-p", help="Profile name to use")
 @click.option("--message", "-m", help="Commit message")
-def push(config: Optional[str], message: Optional[str]):
+def push(config: Optional[str], profile: Optional[str], message: Optional[str]):
     """Push local OrcaSlicer profiles to the repository."""
     config_path = Path(config) if config else None
-    cfg = Config(config_path)
+    cfg = Config(config_path, profile)
     
     if not cfg.repository_url and not click.confirm("No repository URL configured. Continue with local commit only?"):
         return
@@ -121,10 +145,11 @@ def push(config: Optional[str], message: Optional[str]):
 
 @main.command()
 @click.option("--config", "-c", type=click.Path(), help="Path to config file")
-def pull(config: Optional[str]):
+@click.option("--profile", "-p", help="Profile name to use")
+def pull(config: Optional[str], profile: Optional[str]):
     """Pull OrcaSlicer profiles from the repository."""
     config_path = Path(config) if config else None
-    cfg = Config(config_path)
+    cfg = Config(config_path, profile)
     
     if not cfg.repository_url:
         console.print("[red]✗[/red] No repository URL configured. Run 'orcasync init' first.")
@@ -162,10 +187,11 @@ def pull(config: Optional[str]):
 
 @main.command()
 @click.option("--config", "-c", type=click.Path(), help="Path to config file")
-def status(config: Optional[str]):
+@click.option("--profile", "-p", help="Profile name to use")
+def status(config: Optional[str], profile: Optional[str]):
     """Show OrcaSync status."""
     config_path = Path(config) if config else None
-    cfg = Config(config_path)
+    cfg = Config(config_path, profile)
     
     # Configuration status
     table = Table(title="OrcaSync Status")
@@ -173,6 +199,8 @@ def status(config: Optional[str]):
     table.add_column("Value", style="green")
     
     table.add_row("Config File", str(cfg.config_path))
+    table.add_row("Active Profile", cfg.profile_name or cfg.data.get("default_profile") or "[dim]None (using global settings)[/dim]")
+    table.add_row("Available Profiles", ", ".join(cfg.list_profiles()) or "[dim]None[/dim]")
     table.add_row("Repository URL", cfg.repository_url or "[dim]Not configured[/dim]")
     table.add_row("Branch Name", cfg.branch_name)
     table.add_row("User Paths", "\n".join(str(p) for p in cfg.user_paths))
@@ -209,10 +237,11 @@ def status(config: Optional[str]):
 
 @main.command()
 @click.option("--config", "-c", type=click.Path(), help="Path to config file")
-def config_path(config: Optional[str]):
+@click.option("--profile", "-p", help="Profile name to use")
+def config_path(config: Optional[str], profile: Optional[str]):
     """Show the path to the configuration file."""
     config_path_obj = Path(config) if config else None
-    cfg = Config(config_path_obj)
+    cfg = Config(config_path_obj, profile)
     console.print(str(cfg.config_path))
 
 

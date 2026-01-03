@@ -28,14 +28,86 @@ class Config:
         },
     }
     
-    def __init__(self, config_path: Optional[Path] = None):
+    @staticmethod
+    def discover_orcaslicer_paths() -> Dict[str, List[Path]]:
+        """Automatically discover OrcaSlicer installation paths.
+        
+        Returns:
+            Dict with 'user' and 'system' keys containing lists of discovered paths.
+        """
+        discovered = {"user": [], "system": []}
+        system = platform.system()
+        
+        # Get standard paths for the current platform
+        default_paths = Config.DEFAULT_PATHS.get(system, Config.DEFAULT_PATHS["Linux"])
+        
+        # Check standard locations
+        for path_type in ["user", "system"]:
+            standard_path = default_paths[path_type]
+            if standard_path.exists() and standard_path.is_dir():
+                discovered[path_type].append(standard_path)
+        
+        # Additional search locations based on platform
+        search_locations = []
+        
+        if system == "Windows":
+            # Check local appdata, program files, portable installations
+            search_locations.extend([
+                Path(os.environ.get("LOCALAPPDATA", "")) / "OrcaSlicer",
+                Path(os.environ.get("PROGRAMFILES", "")) / "OrcaSlicer",
+                Path(os.environ.get("PROGRAMFILES(X86)", "")) / "OrcaSlicer",
+                Path.home() / "OrcaSlicer",
+            ])
+        elif system == "Darwin":
+            # Check additional macOS locations
+            search_locations.extend([
+                Path.home() / ".config" / "OrcaSlicer",
+                Path("/Applications/OrcaSlicer.app/Contents/Resources") / "profiles",
+            ])
+        elif system == "Linux":
+            # Check additional Linux locations including WSL
+            search_locations.extend([
+                Path.home() / ".local" / "share" / "OrcaSlicer",
+                Path.home() / "OrcaSlicer",
+            ])
+            
+            # WSL-specific: Check Windows paths if running in WSL
+            if Path("/mnt/c").exists():
+                # Try to find Windows user directory
+                windows_users = Path("/mnt/c/Users")
+                if windows_users.exists():
+                    for user_dir in windows_users.iterdir():
+                        if user_dir.is_dir():
+                            search_locations.extend([
+                                user_dir / "AppData" / "Roaming" / "OrcaSlicer",
+                                user_dir / "AppData" / "Local" / "OrcaSlicer",
+                            ])
+        
+        # Search additional locations
+        for base_path in search_locations:
+            if not base_path.exists():
+                continue
+            
+            for path_type in ["user", "system"]:
+                candidate = base_path / path_type
+                if candidate.exists() and candidate.is_dir():
+                    # Avoid duplicates
+                    if candidate not in discovered[path_type]:
+                        discovered[path_type].append(candidate)
+        
+        return discovered
+    
+    def __init__(self, config_path: Optional[Path] = None, profile: Optional[str] = None):
         """Initialize configuration.
         
         Args:
             config_path: Path to config file. If None, looks in default locations.
+            profile: Profile name to use. If None, uses default profile or global settings.
         """
         self.config_path = config_path or self._find_config_file()
+        self.profile_name = profile
         self.data = self._load_config()
+        self.active_profile = self._load_profile()
     
     def _find_config_file(self) -> Path:
         """Find configuration file in default locations."""
@@ -66,17 +138,73 @@ class Config:
         system = platform.system()
         default_paths = self.DEFAULT_PATHS.get(system, self.DEFAULT_PATHS["Linux"])
         
+        # Try to discover actual paths
+        discovered = self.discover_orcaslicer_paths()
+        
+        # Use discovered paths if available, otherwise fall back to defaults
+        user_paths = [str(p) for p in discovered["user"]] if discovered["user"] else [str(default_paths["user"])]
+        system_paths = [str(p) for p in discovered["system"]] if discovered["system"] else [str(default_paths["system"])]
+        
         return {
             "repository_url": "",
             "repository_name": "orca-profiles",
             "branch_prefix": "",
             "branch_postfix": "",
-            "user_paths": [str(default_paths["user"])],
-            "system_paths": [str(default_paths["system"])],
+            "user_paths": user_paths,
+            "system_paths": system_paths,
             "sync_interval": 0,  # 0 = manual only
             "auto_commit": True,
             "commit_message_template": "Sync from {hostname} - {timestamp}",
+            "profiles": {},  # Named profiles
+            "default_profile": None,  # Default profile to use
         }
+    
+    def _load_profile(self) -> Dict:
+        """Load and merge profile with base configuration.
+        
+        Returns:
+            Merged configuration dict with profile settings applied.
+        """
+        # Determine which profile to use
+        profile_name = self.profile_name or self.data.get("default_profile")
+        
+        # Start with base config (excluding profiles)
+        base_config = {k: v for k, v in self.data.items() if k not in ["profiles", "default_profile"]}
+        
+        # If no profile specified, return base config
+        if not profile_name:
+            return base_config
+        
+        # Get profile configuration
+        profiles = self.data.get("profiles", {})
+        if profile_name not in profiles:
+            raise ValueError(f"Profile '{profile_name}' not found in config")
+        
+        profile_config = profiles[profile_name]
+        
+        # Merge profile with base (profile overrides base)
+        merged = base_config.copy()
+        
+        # Handle platform-specific paths if present
+        current_platform = platform.system()
+        
+        if "paths" in profile_config:
+            platform_paths = profile_config["paths"].get(current_platform, {})
+            if platform_paths:
+                # Use platform-specific paths
+                if "user_paths" in platform_paths:
+                    merged["user_paths"] = platform_paths["user_paths"]
+                if "system_paths" in platform_paths:
+                    merged["system_paths"] = platform_paths["system_paths"]
+            # Remove the paths key from profile_config before merging other settings
+            profile_settings = {k: v for k, v in profile_config.items() if k != "paths"}
+        else:
+            profile_settings = profile_config
+        
+        # Merge remaining profile settings
+        merged.update(profile_settings)
+        
+        return merged
     
     def save(self):
         """Save configuration to file."""
@@ -86,8 +214,8 @@ class Config:
             yaml.dump(self.data, f, default_flow_style=False)
     
     def get(self, key: str, default=None):
-        """Get configuration value."""
-        return self.data.get(key, default)
+        """Get configuration value from active profile."""
+        return self.active_profile.get(key, default)
     
     def set(self, key: str, value):
         """Set configuration value."""
@@ -96,34 +224,43 @@ class Config:
     @property
     def repository_url(self) -> str:
         """Get repository URL."""
-        return self.data.get("repository_url", "")
+        return self.active_profile.get("repository_url", "")
     
     @property
     def repository_name(self) -> str:
         """Get repository name."""
-        return self.data.get("repository_name", "orca-profiles")
+        return self.active_profile.get("repository_name", "orca-profiles")
     
     @property
     def branch_name(self) -> str:
         """Get current branch name."""
+        # Check if profile has a custom branch_name
+        if "branch_name" in self.active_profile:
+            return self.active_profile["branch_name"]
+        
+        # Otherwise construct from prefix/postfix and hostname
         hostname = platform.node()
-        prefix = self.data.get("branch_prefix", "")
-        postfix = self.data.get("branch_postfix", "")
+        prefix = self.active_profile.get("branch_prefix", "")
+        postfix = self.active_profile.get("branch_postfix", "")
         return f"{prefix}{hostname}{postfix}"
     
     @property
     def user_paths(self) -> List[Path]:
         """Get user profile paths."""
-        paths = self.data.get("user_paths", [])
+        paths = self.active_profile.get("user_paths", [])
         return [Path(p) for p in paths]
     
     @property
     def system_paths(self) -> List[Path]:
         """Get system profile paths."""
-        paths = self.data.get("system_paths", [])
+        paths = self.active_profile.get("system_paths", [])
         return [Path(p) for p in paths]
     
     @property
     def sync_paths(self) -> List[Path]:
         """Get all paths to sync."""
         return self.user_paths + self.system_paths
+    
+    def list_profiles(self) -> List[str]:
+        """List available profile names."""
+        return list(self.data.get("profiles", {}).keys())
