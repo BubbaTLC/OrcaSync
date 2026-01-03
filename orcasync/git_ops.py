@@ -47,6 +47,10 @@ class GitManager:
                     # Windows: Use wincred or manager-core
                     config.set_value("credential", "helper", "wincred")
                 # Linux typically uses system git config, so we don't override
+                
+                # Configure pull strategy to avoid divergent branches error
+                # Use rebase to keep linear history on per-machine branches
+                config.set_value("pull", "rebase", "true")
         except Exception:
             # If credential configuration fails, continue without it
             # The system's default git config will be used
@@ -315,9 +319,19 @@ class GitManager:
         old_commit = self.repo.head.commit
         
         try:
-            origin.pull(self.branch_name)
+            # Use rebase strategy to handle divergent branches
+            # This keeps a linear history and is appropriate for per-machine branches
+            origin.pull(self.branch_name, rebase=True)
         except git.GitCommandError as e:
-            raise GitSyncError(f"Failed to pull: {e}")
+            error_msg = str(e).lower()
+            if "divergent branches" in error_msg or "need to specify how to reconcile" in error_msg:
+                # Try with merge strategy as fallback
+                try:
+                    origin.pull(self.branch_name, rebase=False)
+                except git.GitCommandError as e2:
+                    raise GitSyncError(f"Failed to pull and merge divergent branches: {e2}")
+            else:
+                raise GitSyncError(f"Failed to pull: {e}")
         
         # Get new commit
         new_commit = self.repo.head.commit
