@@ -1,0 +1,20 @@
+{
+    "bottom_shell_layers": "4",
+    "brim_type": "no_brim",
+    "from": "User",
+    "inherits": "0.24mm Draft @Creality Ender3V2",
+    "is_custom_defined": "0",
+    "name": "0.24mm Vase Mode",
+    "outer_wall_line_width": "0.7",
+    "print_settings_id": "0.24mm Vase Mode",
+    "seam_position": "back",
+    "skirt_height": "2",
+    "skirt_loops": "2",
+    "sparse_infill_density": "0%",
+    "sparse_infill_pattern": "supportcubic",
+    "spiral_mode": "1",
+    "top_shell_layers": "0",
+    "version": "2.2.0.4",
+    "wall_loops": "1",
+    "wall_sequence": "inner-outer-inner wall"
+}

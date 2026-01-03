@@ -1,0 +1,19 @@
+{
+    "default_filament_colour": [
+        "#2A3352"
+    ],
+    "filament_settings_id": [
+        "Elegoo Matte PLA - Navy Blue"
+    ],
+    "filament_vendor": [
+        "Elegoo"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "Elegoo Matte PLA - Navy Blue",
+    "nozzle_temperature": [
+        "210"
+    ],
+    "version": "2.2.0.4"
+}

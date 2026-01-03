@@ -1,0 +1,16 @@
+{
+    "elefant_foot_compensation": "0.2",
+    "elefant_foot_compensation_layers": "3",
+    "from": "User",
+    "inherits": "0.15mm Optimal @Creality Ender3V2",
+    "ironing_pattern": "concentric",
+    "is_custom_defined": "0",
+    "name": "0.15mm",
+    "only_one_wall_top": "1",
+    "print_settings_id": "0.15mm",
+    "reduce_crossing_wall": "1",
+    "skirt_distance": "10",
+    "skirt_height": "3",
+    "skirt_loops": "3",
+    "version": "2.2.0.4"
+}

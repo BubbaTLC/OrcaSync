@@ -1,0 +1,19 @@
+{
+    "default_filament_colour": [
+        "#1C1C1C"
+    ],
+    "filament_settings_id": [
+        "Elegoo Matte PLA - Black"
+    ],
+    "filament_vendor": [
+        "Elegoo"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "Elegoo Matte PLA - Black",
+    "nozzle_temperature": [
+        "215"
+    ],
+    "version": "2.2.0.4"
+}

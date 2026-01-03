@@ -1,0 +1,21 @@
+{
+    "bridge_angle": "45",
+    "brim_type": "no_brim",
+    "elefant_foot_compensation": "0.2",
+    "elefant_foot_compensation_layers": "3",
+    "enable_support": "1",
+    "from": "User",
+    "inherits": "0.20mm Standard @Creality Ender3V2",
+    "is_custom_defined": "0",
+    "name": "0.20mm",
+    "print_settings_id": "0.20mm",
+    "skirt_distance": "5",
+    "skirt_height": "2",
+    "skirt_loops": "2",
+    "sparse_infill_pattern": "supportcubic",
+    "top_shell_layers": "3",
+    "version": "2.2.0.4",
+    "wall_loops": "2",
+    "wall_sequence": "outer wall/inner wall",
+    "wipe_on_loops": "1"
+}

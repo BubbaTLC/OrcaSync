@@ -1,0 +1,13 @@
+{
+    "filament_settings_id": [
+        "Generic PLA"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "Generic PLA",
+    "nozzle_temperature": [
+        "210"
+    ],
+    "version": "2.2.0.4"
+}

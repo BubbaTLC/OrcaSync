@@ -1,0 +1,19 @@
+{
+    "default_filament_colour": [
+        "#F4B9B1"
+    ],
+    "filament_settings_id": [
+        "Elegoo Matte PLA - Sakura Pink"
+    ],
+    "filament_vendor": [
+        "Elegoo"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "Elegoo Matte PLA - Sakura Pink",
+    "nozzle_temperature": [
+        "210"
+    ],
+    "version": "2.2.0.4"
+}

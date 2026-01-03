@@ -1,0 +1,22 @@
+{
+    "bottom_shell_layers": "999",
+    "bottom_surface_pattern": "monotonicline",
+    "brim_type": "no_brim",
+    "from": "User",
+    "infill_direction": "0",
+    "inherits": "0.15mm Optimal @Creality Ender3V2",
+    "initial_layer_infill_speed": "40",
+    "initial_layer_print_height": "0.16",
+    "initial_layer_speed": "30",
+    "is_custom_defined": "0",
+    "layer_height": "0.08",
+    "name": "0.08mm Hueforge",
+    "outer_wall_speed": "30",
+    "print_settings_id": "0.08mm Hueforge",
+    "solid_infill_direction": "0",
+    "sparse_infill_density": "100%",
+    "sparse_infill_pattern": "zig-zag",
+    "top_shell_layers": "9",
+    "version": "2.2.0.4",
+    "wall_loops": "1"
+}

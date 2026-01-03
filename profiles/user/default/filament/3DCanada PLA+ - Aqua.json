@@ -1,0 +1,22 @@
+{
+    "default_filament_colour": [
+        "#94DDEC"
+    ],
+    "filament_settings_id": [
+        "3DCanada PLA+ - Aqua"
+    ],
+    "filament_type": [
+        "PLA+"
+    ],
+    "filament_vendor": [
+        "3D Printing Canada"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "3DCanada PLA+ - Aqua",
+    "nozzle_temperature": [
+        "215"
+    ],
+    "version": "2.2.0.4"
+}

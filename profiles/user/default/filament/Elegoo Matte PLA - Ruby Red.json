@@ -1,0 +1,19 @@
+{
+    "default_filament_colour": [
+        "#FF3333"
+    ],
+    "filament_settings_id": [
+        "Elegoo Matte PLA - Ruby Red"
+    ],
+    "filament_vendor": [
+        "Elegoo"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "Elegoo Matte PLA - Ruby Red",
+    "nozzle_temperature": [
+        "210"
+    ],
+    "version": "2.2.0.4"
+}

@@ -1,0 +1,16 @@
+{
+    "default_filament_colour": [
+        "#BFBFBF"
+    ],
+    "filament_settings_id": [
+        "Hello 3D PLA - Marble"
+    ],
+    "from": "User",
+    "inherits": "Creality Generic PLA",
+    "is_custom_defined": "0",
+    "name": "Hello 3D PLA - Marble",
+    "nozzle_temperature": [
+        "210"
+    ],
+    "version": "2.2.0.4"
+}
