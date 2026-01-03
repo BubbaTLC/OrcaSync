@@ -31,11 +31,34 @@ class GitManager:
         self.branch_name = branch_name
         self.repo: Optional[Repo] = None
     
+    def _configure_credentials(self) -> None:
+        """Configure Git credential helper based on platform."""
+        if not self.repo:
+            return
+        
+        try:
+            system = platform.system()
+            with self.repo.config_writer() as config:
+                if system == "Darwin":
+                    # macOS: Use osxkeychain credential helper
+                    # This ensures GitPython uses the macOS Keychain like manual git commands
+                    config.set_value("credential", "helper", "osxkeychain")
+                elif system == "Windows":
+                    # Windows: Use wincred or manager-core
+                    config.set_value("credential", "helper", "wincred")
+                # Linux typically uses system git config, so we don't override
+        except Exception:
+            # If credential configuration fails, continue without it
+            # The system's default git config will be used
+            pass
+    
     def init_repository(self) -> Repo:
         """Initialize or open the Git repository."""
         if self.repo_path.exists():
             try:
                 self.repo = Repo(self.repo_path)
+                # Configure credentials for existing repo
+                self._configure_credentials()
                 return self.repo
             except git.InvalidGitRepositoryError:
                 raise GitSyncError(f"{self.repo_path} exists but is not a valid Git repository")
@@ -51,6 +74,9 @@ class GitManager:
         # Initialize new repository
         self.repo_path.mkdir(parents=True, exist_ok=True)
         self.repo = Repo.init(self.repo_path)
+        
+        # Configure credential helper based on platform
+        self._configure_credentials()
         
         # Create initial commit if repository is empty
         if not self.repo.heads:
@@ -247,10 +273,24 @@ class GitManager:
                     
         except git.GitCommandError as e:
             # Provide helpful error messages for common issues
-            error_msg = str(e)
-            if "Authentication failed" in error_msg or "could not read Username" in error_msg:
-                raise GitSyncError(f"Authentication failed. Check your Git credentials for {self.repo_url}")
-            elif "Repository not found" in error_msg:
+            error_msg = str(e).lower()
+            if any(phrase in error_msg for phrase in [
+                "authentication failed",
+                "could not read username",
+                "could not read password",
+                "permission denied",
+                "authentication error",
+                "invalid credentials",
+                "access denied",
+                "403",
+                "401"
+            ]):
+                # On macOS, suggest using SSH or checking keychain
+                extra_help = ""
+                if platform.system() == "Darwin":
+                    extra_help = " Consider using SSH URL (git@github.com:user/repo.git) or check your Keychain Access for saved credentials."
+                raise GitSyncError(f"Authentication failed. Check your Git credentials for {self.repo_url}.{extra_help}")
+            elif "repository not found" in error_msg or "404" in error_msg:
                 raise GitSyncError(f"Repository not found: {self.repo_url}. Make sure it exists and you have access.")
             elif "non-fast-forward" in error_msg:
                 raise GitSyncError("Push rejected (non-fast-forward). Run 'orcasync pull' first to merge remote changes.")

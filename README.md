@@ -132,6 +132,49 @@ You can also specify a custom config file with the `--config` flag.
 2. **Branch per Machine**: Use the default hostname-based branching to avoid conflicts
 3. **Regular Syncs**: Push changes after making profile updates, pull before starting work on another machine
 
+## Troubleshooting
+
+### macOS Authentication Issues
+
+If you can push/pull with git manually but get authentication errors with OrcaSync:
+
+1. **Configure the credential helper**:
+   ```bash
+   git config --global credential.helper osxkeychain
+   ```
+
+2. **Use SSH instead of HTTPS** (recommended):
+   - Generate SSH key: `ssh-keygen -t ed25519 -C "your_email@example.com"`
+   - Add to GitHub: Copy `~/.ssh/id_ed25519.pub` to GitHub Settings > SSH Keys
+   - Update repository URL in `~/.config/orcasync/orcasync-config.yaml`:
+     ```yaml
+     repository_url: git@github.com:username/repo.git
+     ```
+
+3. **Test your credentials**:
+   ```bash
+   python test_git_credentials.py
+   ```
+
+4. **Re-authenticate manually**:
+   ```bash
+   cd ~/.local/share/orcasync/orcasync
+   git push  # This will prompt for credentials
+   ```
+
+### Windows Credential Issues
+
+If experiencing authentication problems on Windows:
+```bash
+git config --global credential.helper wincred
+```
+
+### General Authentication Tips
+
+- **Use a Personal Access Token (PAT)** instead of password for HTTPS URLs (GitHub requires this)
+- **Check your Keychain/Credential Manager** for saved credentials
+- **SSH keys are more reliable** than HTTPS for automated tools
+
 ## Development
 
 ### Running Tests

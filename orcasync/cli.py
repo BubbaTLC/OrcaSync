@@ -193,7 +193,7 @@ def pull(config: Optional[str], profile: Optional[str]):
 @click.option("--profile", "-p", help="Profile name to use")
 @click.option("--message", "-m", help="Commit message for push")
 def sync(config: Optional[str], profile: Optional[str], message: Optional[str]):
-    """Sync profiles by pulling from remote and then pushing local changes."""
+    """Sync profiles by fetching, pulling, and pushing changes."""
     config_path = Path(config) if config else None
     cfg = Config(config_path, profile)
     
@@ -204,12 +204,23 @@ def sync(config: Optional[str], profile: Optional[str], message: Optional[str]):
     repo_path = Path.home() / ".local" / "share" / "orcasync" / cfg.repository_name
     
     try:
-        # First, pull changes from remote
-        with console.status("[bold blue]Pulling latest changes..."):
-            git_mgr = GitManager(repo_path, cfg.repository_url, cfg.branch_name)
-            git_mgr.init_repository()
-            git_mgr.ensure_branch()
-            
+        git_mgr = GitManager(repo_path, cfg.repository_url, cfg.branch_name)
+        git_mgr.init_repository()
+        git_mgr.ensure_branch()
+        
+        # Step 1: Fetch changes from remote
+        console.print("[bold blue]Step 1/3: Fetching from remote...[/bold blue]")
+        with console.status("[blue]Fetching..."):
+            if "origin" in git_mgr.repo.remotes:
+                origin = git_mgr.repo.remotes.origin
+                fetch_info = origin.fetch()
+                console.print(f"[green]✓[/green] Fetched latest changes from remote")
+            else:
+                console.print("[yellow]⚠[/yellow] No remote configured, skipping fetch")
+        
+        # Step 2: Pull changes and restore to OrcaSlicer
+        console.print("\n[bold blue]Step 2/3: Pulling changes...[/bold blue]")
+        with console.status("[blue]Pulling..."):
             # Check for local changes and commit them before pulling
             if git_mgr.repo.is_dirty() or git_mgr.repo.untracked_files:
                 git_mgr.repo.git.add(A=True)
@@ -228,8 +239,9 @@ def sync(config: Optional[str], profile: Optional[str], message: Optional[str]):
             else:
                 console.print("[blue]ℹ[/blue] No remote changes to pull")
         
-        # Then, push local changes
-        with console.status("[bold blue]Pushing local changes..."):
+        # Step 3: Push local changes
+        console.print("\n[bold blue]Step 3/3: Pushing local changes...[/bold blue]")
+        with console.status("[blue]Pushing..."):
             # Sync files
             copied = git_mgr.sync_files(cfg.sync_paths)
             console.print(f"[green]✓[/green] Copied {len(copied)} files to repository")
@@ -259,7 +271,7 @@ def sync(config: Optional[str], profile: Optional[str], message: Optional[str]):
             except Exception as e:
                 console.print(f"[yellow]⚠[/yellow] Could not push: {e}")
         
-        console.print("\n[bold green]Sync complete![/bold green]")
+        console.print("\n[bold green]✓ Sync complete![/bold green]")
         
     except GitSyncError as e:
         console.print(f"[red]✗[/red] Sync failed: {e}")
@@ -278,18 +290,77 @@ def status(config: Optional[str], profile: Optional[str]):
     cfg = Config(config_path, profile)
     
     # Configuration status
-    table = Table(title="OrcaSync Status")
-    table.add_column("Property", style="cyan")
+    table = Table(title="OrcaSync Configuration")
+    table.add_column("Property", style="cyan", no_wrap=True)
     table.add_column("Value", style="green")
     
     table.add_row("Config File", str(cfg.config_path))
-    table.add_row("Active Profile", cfg.profile_name or cfg.data.get("default_profile") or "[dim]None (using global settings)[/dim]")
-    table.add_row("Available Profiles", ", ".join(cfg.list_profiles()) or "[dim]None[/dim]")
+    
+    # Show active profile more prominently
+    active_profile = cfg.profile_name or cfg.data.get("default_profile")
+    if active_profile:
+        table.add_row("Active Profile", f"[bold]{active_profile}[/bold]")
+    else:
+        table.add_row("Active Profile", "[dim]None (using global settings)[/dim]")
+    
+    available_profiles = cfg.list_profiles()
+    if available_profiles:
+        table.add_row("Available Profiles", ", ".join(available_profiles))
+    
     table.add_row("Repository URL", cfg.repository_url or "[dim]Not configured[/dim]")
     table.add_row("Branch Name", cfg.branch_name)
-    table.add_row("User Paths", "\n".join(str(p) for p in cfg.user_paths))
     
     console.print(table)
+    console.print()
+    
+    # OrcaSlicer Profile Paths
+    paths_table = Table(title="OrcaSlicer Profile Locations")
+    paths_table.add_column("Type", style="cyan", no_wrap=True)
+    paths_table.add_column("Path", style="yellow")
+    paths_table.add_column("Exists", style="magenta", no_wrap=True)
+    paths_table.add_column("Files", style="blue", no_wrap=True)
+    
+    # Show user paths
+    if cfg.user_paths:
+        for user_path in cfg.user_paths:
+            exists = user_path.exists()
+            file_count = 0
+            if exists:
+                try:
+                    # Count profile files (json, info, etc.)
+                    file_count = sum(1 for _ in user_path.rglob("*") if _.is_file())
+                except:
+                    file_count = 0
+            
+            paths_table.add_row(
+                "User",
+                str(user_path),
+                "[green]✓[/green]" if exists else "[red]✗[/red]",
+                str(file_count) if exists else "-"
+            )
+    else:
+        paths_table.add_row("User", "[dim]No user paths configured[/dim]", "-", "-")
+    
+    # Show system paths if configured
+    if cfg.system_paths:
+        for system_path in cfg.system_paths:
+            exists = system_path.exists()
+            file_count = 0
+            if exists:
+                try:
+                    file_count = sum(1 for _ in system_path.rglob("*") if _.is_file())
+                except:
+                    file_count = 0
+            
+            paths_table.add_row(
+                "System",
+                str(system_path),
+                "[green]✓[/green]" if exists else "[red]✗[/red]",
+                str(file_count) if exists else "-"
+            )
+    
+    console.print(paths_table)
+    console.print()
     
     # Repository status
     repo_path = Path.home() / ".local" / "share" / "orcasync" / cfg.repository_name
@@ -302,21 +373,36 @@ def status(config: Optional[str], profile: Optional[str]):
             git_status = git_mgr.get_status()
             
             repo_table = Table(title="Repository Status")
-            repo_table.add_column("Property", style="cyan")
+            repo_table.add_column("Property", style="cyan", no_wrap=True)
             repo_table.add_column("Value")
             
-            repo_table.add_row("Repository Path", str(repo_path))
+            repo_table.add_row("Local Repository", str(repo_path))
             repo_table.add_row("Current Branch", git_status.get("branch", "N/A"))
-            repo_table.add_row("Has Changes", "Yes" if git_status.get("dirty") else "No")
+            repo_table.add_row("Has Uncommitted Changes", "[yellow]Yes[/yellow]" if git_status.get("dirty") else "[green]No[/green]")
             repo_table.add_row("Untracked Files", str(git_status.get("untracked_files", 0)))
-            repo_table.add_row("Remote Configured", "Yes" if git_status.get("has_remote") else "No")
+            repo_table.add_row("Remote Configured", "[green]Yes[/green]" if git_status.get("has_remote") else "[yellow]No[/yellow]")
+            
+            # Count synced files in repository (excluding .git and other hidden directories)
+            synced_files = 0
+            if repo_path.exists():
+                try:
+                    synced_files = sum(
+                        1 for f in repo_path.rglob("*") 
+                        if f.is_file() 
+                        and ".git" not in f.parts 
+                        and not any(part.startswith(".") for part in f.parts[len(repo_path.parts):])
+                        and f.name != "README.md"
+                    )
+                except:
+                    pass
+            repo_table.add_row("Synced Files in Repo", str(synced_files))
             
             console.print(repo_table)
             
         except GitSyncError as e:
-            console.print(f"[yellow]Repository status unavailable: {e}[/yellow]")
+            console.print(f"[yellow]⚠ Repository status unavailable: {e}[/yellow]")
     else:
-        console.print("\n[yellow]Repository not initialized. Run 'orcasync init'.[/yellow]")
+        console.print("[yellow]⚠ Repository not initialized. Run 'orcasync init' to get started.[/yellow]")
 
 
 @main.command()
