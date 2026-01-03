@@ -145,18 +145,26 @@ class Config:
         # Only sync user paths by default (system paths disabled)
         user_paths = [str(p) for p in discovered["user"]] if discovered["user"] else [str(default_paths["user"])]
         
+        # Create platform-specific path configurations
+        paths_config = {}
+        for platform_name, paths in self.DEFAULT_PATHS.items():
+            paths_config[platform_name] = {
+                "user_paths": [str(paths["user"])],
+                "system_paths": []  # Disabled by default
+            }
+        
         return {
             "repository_url": "",
             "repository_name": "orca-profiles",
-            "branch_prefix": "",
-            "branch_postfix": "",
-            "user_paths": user_paths,
-            "system_paths": [],  # Disabled by default - only sync user profiles
-            "sync_interval": 0,  # 0 = manual only
             "auto_commit": True,
             "commit_message_template": "Sync from {hostname} - {timestamp}",
-            "profiles": {},  # Named profiles
-            "default_profile": None,  # Default profile to use
+            "default_profile": "default",  # Use 'default' profile by default
+            "profiles": {
+                "default": {
+                    "branch_name": "main",
+                    "paths": paths_config
+                }
+            }
         }
     
     def _load_profile(self) -> Dict:

@@ -58,13 +58,21 @@ This will:
 
 ### 2. Push Your Profiles
 
-Upload your current OrcaSlicer profiles to the repository:
+Upload your current OrcaSlicer profiles to the repository (automatically pushes to GitHub):
 
 ```bash
 orcasync push
 ```
 
-### 3. Pull Profiles on Another Machine
+### 3. Sync Profiles
+
+For the easiest workflow, use `sync` to pull remote changes and push your local changes in one command:
+
+```bash
+orcasync sync
+```
+
+### 4. Pull Profiles on Another Machine
 
 On another machine, after running `orcasync init` with the same repository URL:
 
@@ -77,8 +85,9 @@ orcasync pull
 ### Commands
 
 - `orcasync init` - Initialize configuration and repository
-- `orcasync push` - Upload local profiles to repository
+- `orcasync push` - Upload local profiles to repository and push to remote
 - `orcasync pull` - Download profiles from repository
+- `orcasync sync` - Pull remote changes, then push local changes (recommended)
 - `orcasync status` - Show current sync status
 - `orcasync config-path` - Show path to config file
 

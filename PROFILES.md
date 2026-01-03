@@ -2,7 +2,9 @@
 
 ## Overview
 
-Profiles allow you to use the same OrcaSync configuration across multiple machines (Mac, Windows, Linux) by automatically selecting the correct local paths for each platform while syncing to the same repository.
+OrcaSync uses profiles to manage your OrcaSlicer configurations across multiple machines (Mac, Windows, Linux) by automatically selecting the correct local paths for each platform while syncing to the same repository.
+
+Every OrcaSync configuration uses profiles. By default, a profile named "default" is created that syncs all machines to the same branch.
 
 ## How It Works
 
@@ -38,9 +40,33 @@ orcasync pull                    # Pulls changes
 
 ```yaml
 # Set which profile to use by default
-default_profile: home
+default_profile: default
 
 profiles:
+  default:
+    # Default profile - syncs all machines to 'main' branch
+    repository_url: https://github.com/you/orca-profiles
+    repository_name: orca-profiles
+    branch_name: main
+    auto_commit: true
+    
+    # Platform-specific paths
+    paths:
+      Darwin:  # macOS
+        user_paths:
+          - /Users/you/Library/Application Support/OrcaSlicer/user
+        system_paths: []
+      
+      Windows:
+        user_paths:
+          - C:/Users/you/AppData/Roaming/OrcaSlicer/user
+        system_paths: []
+      
+      Linux:
+        user_paths:
+          - /home/you/.config/OrcaSlicer/user
+        system_paths: []
+  
   home:
     # Shared settings (same for all machines)
     repository_url: https://github.com/you/orca-profiles
@@ -53,8 +79,7 @@ profiles:
       Darwin:  # macOS
         user_paths:
           - /Users/you/Library/Application Support/OrcaSlicer/user
-        system_paths:
-          - /Users/you/Library/Application Support/OrcaSlicer/system
+        system_paths: []
       
       Windows:
         user_paths:
@@ -85,7 +110,7 @@ profiles:
 
 ### Using the Default Profile
 ```bash
-orcasync push           # Uses 'home' (from default_profile)
+orcasync push           # Uses 'default' profile
 orcasync pull
 orcasync status
 ```
@@ -97,8 +122,11 @@ orcasync pull --profile work
 orcasync status --profile work
 ```
 
-### Without Profiles (Legacy)
-If you don't define profiles, OrcaSync uses the global settings at the root of the config file.
+### Switching Profiles
+```bash
+orcasync push --profile home    # Use 'home' profile instead
+orcasync pull --profile work    # Use 'work' profile
+```
 
 ## Profile Settings
 
@@ -137,3 +165,12 @@ Each profile can sync to:
 - Different repositories
 - Different branches in the same repository
 - Different local paths
+
+## Default Profile
+
+When you initialize OrcaSync, a "default" profile is automatically created with:
+- Branch name: "main" (all machines sync to the same branch)
+- Platform-specific paths for Windows, macOS, and Linux
+- Auto-commit enabled
+
+You can customize this profile or create additional profiles for different use cases (home, work, testing, etc.).

@@ -222,9 +222,40 @@ class GitManager:
         origin = self.repo.remotes.origin
         
         try:
-            origin.push(self.branch_name)
+            # For first push or when tracking not set, use set_upstream
+            # This creates the branch on remote if it doesn't exist
+            current_branch = self.repo.active_branch
+            tracking_branch = current_branch.tracking_branch()
+            
+            if tracking_branch is None:
+                # First push - set upstream
+                push_info = origin.push(refspec=f'{self.branch_name}:{self.branch_name}', set_upstream=True)
+            else:
+                # Regular push
+                push_info = origin.push(self.branch_name)
+            
+            # Check push results for errors
+            for info in push_info:
+                if info.flags & info.ERROR:
+                    raise GitSyncError(f"Push failed: {info.summary}")
+                if info.flags & info.REJECTED:
+                    raise GitSyncError(f"Push rejected: {info.summary}. Try pulling first or check if remote branch exists.")
+                if info.flags & info.REMOTE_REJECTED:
+                    raise GitSyncError(f"Remote rejected push: {info.summary}")
+                if info.flags & info.REMOTE_FAILURE:
+                    raise GitSyncError(f"Remote failure: {info.summary}")
+                    
         except git.GitCommandError as e:
-            raise GitSyncError(f"Failed to push: {e}")
+            # Provide helpful error messages for common issues
+            error_msg = str(e)
+            if "Authentication failed" in error_msg or "could not read Username" in error_msg:
+                raise GitSyncError(f"Authentication failed. Check your Git credentials for {self.repo_url}")
+            elif "Repository not found" in error_msg:
+                raise GitSyncError(f"Repository not found: {self.repo_url}. Make sure it exists and you have access.")
+            elif "non-fast-forward" in error_msg:
+                raise GitSyncError("Push rejected (non-fast-forward). Run 'orcasync pull' first to merge remote changes.")
+            else:
+                raise GitSyncError(f"Failed to push: {e}")
     
     def pull(self) -> Tuple[bool, List[str]]:
         """Pull changes from remote repository.

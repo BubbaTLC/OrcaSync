@@ -126,12 +126,15 @@ def push(config: Optional[str], profile: Optional[str], message: Optional[str]):
                 console.print("[green]✓[/green] Changes committed")
             else:
                 console.print("[yellow]No changes to commit[/yellow]")
-                return
-            
-            # Push if remote configured
-            if cfg.repository_url:
+        
+        # Push to remote if configured
+        if cfg.repository_url and has_changes:
+            try:
                 git_mgr.push()
                 console.print("[green]✓[/green] Pushed to remote repository")
+            except GitSyncError as e:
+                console.print(f"[yellow]⚠[/yellow] Push to remote failed: {e}")
+                console.print("[dim]Changes committed locally but not pushed to remote[/dim]")
         
         console.print("\n[bold green]Push complete![/bold green]")
         
@@ -176,6 +179,87 @@ def pull(config: Optional[str], profile: Optional[str]):
                 console.print("[yellow]No changes to pull[/yellow]")
         
         console.print("\n[bold green]Pull complete![/bold green]")
+        
+    except GitSyncError as e:
+        console.print(f"[red]✗[/red] Sync failed: {e}")
+        sys.exit(1)
+    except Exception as e:
+        console.print(f"[red]✗[/red] Unexpected error: {e}")
+        sys.exit(1)
+
+
+@main.command()
+@click.option("--config", "-c", type=click.Path(), help="Path to config file")
+@click.option("--profile", "-p", help="Profile name to use")
+@click.option("--message", "-m", help="Commit message for push")
+def sync(config: Optional[str], profile: Optional[str], message: Optional[str]):
+    """Sync profiles by pulling from remote and then pushing local changes."""
+    config_path = Path(config) if config else None
+    cfg = Config(config_path, profile)
+    
+    if not cfg.repository_url:
+        console.print("[red]✗[/red] No repository URL configured. Run 'orcasync init' first.")
+        sys.exit(1)
+    
+    repo_path = Path.home() / ".local" / "share" / "orcasync" / cfg.repository_name
+    
+    try:
+        # First, pull changes from remote
+        with console.status("[bold blue]Pulling latest changes..."):
+            git_mgr = GitManager(repo_path, cfg.repository_url, cfg.branch_name)
+            git_mgr.init_repository()
+            git_mgr.ensure_branch()
+            
+            # Check for local changes and commit them before pulling
+            if git_mgr.repo.is_dirty() or git_mgr.repo.untracked_files:
+                git_mgr.repo.git.add(A=True)
+                git_mgr.commit_changes("Pre-sync commit")
+                console.print("[blue]ℹ[/blue] Committed local repository changes before pull")
+            
+            # Pull changes
+            has_changes, changed_files = git_mgr.pull()
+            
+            if has_changes:
+                console.print(f"[green]✓[/green] Pulled {len(changed_files)} changed files")
+                
+                # Restore files
+                restored = git_mgr.restore_files(cfg.sync_paths)
+                console.print(f"[green]✓[/green] Restored {len(restored)} files to OrcaSlicer")
+            else:
+                console.print("[blue]ℹ[/blue] No remote changes to pull")
+        
+        # Then, push local changes
+        with console.status("[bold blue]Pushing local changes..."):
+            # Sync files
+            copied = git_mgr.sync_files(cfg.sync_paths)
+            console.print(f"[green]✓[/green] Copied {len(copied)} files to repository")
+            
+            # Commit
+            has_local_changes = git_mgr.commit_changes(message)
+            if has_local_changes:
+                console.print("[green]✓[/green] Local changes committed")
+            
+            # Always push if there are any commits ahead of remote
+            try:
+                if git_mgr.repo.active_branch.tracking_branch():
+                    commits_ahead = list(git_mgr.repo.iter_commits(f'{git_mgr.repo.active_branch.tracking_branch().name}..{git_mgr.repo.active_branch.name}'))
+                    if commits_ahead:
+                        git_mgr.push()
+                        console.print(f"[green]✓[/green] Pushed {len(commits_ahead)} commit(s) to remote repository")
+                    elif has_local_changes:
+                        git_mgr.push()
+                        console.print("[green]✓[/green] Pushed to remote repository")
+                    else:
+                        console.print("[blue]ℹ[/blue] No commits to push")
+                else:
+                    # No tracking branch, push anyway if we have changes
+                    if has_local_changes:
+                        git_mgr.push()
+                        console.print("[green]✓[/green] Pushed to remote repository")
+            except Exception as e:
+                console.print(f"[yellow]⚠[/yellow] Could not push: {e}")
+        
+        console.print("\n[bold green]Sync complete![/bold green]")
         
     except GitSyncError as e:
         console.print(f"[red]✗[/red] Sync failed: {e}")
