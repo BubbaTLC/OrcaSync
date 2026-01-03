@@ -251,6 +251,12 @@ class GitManager:
         
         origin = self.repo.remotes.origin
         
+        # Set environment to prevent interactive credential prompts
+        # This prevents the command from hanging when credentials are needed
+        import os
+        env = os.environ.copy()
+        env['GIT_TERMINAL_PROMPT'] = '0'
+        
         try:
             # For first push or when tracking not set, use set_upstream
             # This creates the branch on remote if it doesn't exist
@@ -259,10 +265,14 @@ class GitManager:
             
             if tracking_branch is None:
                 # First push - set upstream
-                push_info = origin.push(refspec=f'{self.branch_name}:{self.branch_name}', set_upstream=True)
+                push_info = origin.push(
+                    refspec=f'{self.branch_name}:{self.branch_name}',
+                    set_upstream=True,
+                    env=env
+                )
             else:
                 # Regular push
-                push_info = origin.push(self.branch_name)
+                push_info = origin.push(self.branch_name, env=env)
             
             # Check push results for errors
             for info in push_info:
@@ -286,14 +296,19 @@ class GitManager:
                 "authentication error",
                 "invalid credentials",
                 "access denied",
+                "terminal prompts disabled",
+                "no credentials",
                 "403",
                 "401"
             ]):
                 # On macOS, suggest using SSH or checking keychain
                 extra_help = ""
                 if platform.system() == "Darwin":
-                    extra_help = " Consider using SSH URL (git@github.com:user/repo.git) or check your Keychain Access for saved credentials."
-                raise GitSyncError(f"Authentication failed. Check your Git credentials for {self.repo_url}.{extra_help}")
+                    extra_help = "\n\nSolutions for macOS:\n" \
+                                "1. Switch to SSH: Edit ~/.config/orcasync/orcasync-config.yaml and change repository_url to: git@github.com:BubbaTLC/OrcaSync.git\n" \
+                                "2. Or configure credential helper: git config --global credential.helper osxkeychain\n" \
+                                "3. Or manually authenticate once: cd ~/.local/share/orcasync/orcasync && git push"
+                raise GitSyncError(f"Authentication failed. Git cannot prompt for credentials in non-interactive mode.{extra_help}")
             elif "repository not found" in error_msg or "404" in error_msg:
                 raise GitSyncError(f"Repository not found: {self.repo_url}. Make sure it exists and you have access.")
             elif "non-fast-forward" in error_msg:
