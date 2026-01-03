@@ -61,11 +61,23 @@ class GitManager:
         if self.repo_path.exists():
             try:
                 self.repo = Repo(self.repo_path)
+                
+                # Update remote URL if it exists and has changed
+                if "origin" in self.repo.remotes:
+                    origin = self.repo.remotes.origin
+                    current_url = list(origin.urls)[0] if origin.urls else None
+                    if self.repo_url and current_url != self.repo_url:
+                        origin.set_url(self.repo_url)
+                elif self.repo_url:
+                    # Add remote if it doesn't exist but URL is provided
+                    self.repo.create_remote("origin", self.repo_url)
+                
                 # Configure credentials for existing repo
                 self._configure_credentials()
                 return self.repo
             except git.InvalidGitRepositoryError:
-                raise GitSyncError(f"{self.repo_path} exists but is not a valid Git repository")
+                # Path exists but not a valid repo - remove it and start fresh
+                shutil.rmtree(self.repo_path)
         
         # Clone repository if URL is provided
         if self.repo_url:
