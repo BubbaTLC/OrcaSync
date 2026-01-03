@@ -52,6 +52,14 @@ class GitManager:
         self.repo_path.mkdir(parents=True, exist_ok=True)
         self.repo = Repo.init(self.repo_path)
         
+        # Create initial commit if repository is empty
+        if not self.repo.heads:
+            # Create a README
+            readme_path = self.repo_path / "README.md"
+            readme_path.write_text("# OrcaSync Profiles\n\nThis repository contains OrcaSlicer profile synchronization data.\n")
+            self.repo.index.add(["README.md"])
+            self.repo.index.commit("Initial commit")
+        
         # Add remote if URL provided
         if self.repo_url:
             try:
@@ -81,13 +89,13 @@ class GitManager:
                         self.repo.heads[self.branch_name].set_tracking_branch(origin.refs[self.branch_name])
                     else:
                         # Create new local branch
-                        self.repo.create_head(self.branch_name)
+                        self.repo.create_head(self.branch_name, 'HEAD')
                 else:
                     # No remote, create local branch
-                    self.repo.create_head(self.branch_name)
+                    self.repo.create_head(self.branch_name, 'HEAD')
             except git.GitCommandError:
                 # Create local branch if fetch fails
-                self.repo.create_head(self.branch_name)
+                self.repo.create_head(self.branch_name, 'HEAD')
         
         # Checkout the branch
         self.repo.heads[self.branch_name].checkout()
