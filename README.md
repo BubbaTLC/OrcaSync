@@ -12,6 +12,22 @@ Sync OrcaSlicer profiles between multiple machines using Git. Configure once per
 
 ## Installation
 
+### Option 1: Standalone Executable (No Python Required)
+
+Download the latest executable for your platform from the [Releases page](https://github.com/yourusername/orcasync/releases):
+
+- **Linux**: `orcasync-linux-amd64`
+- **Windows**: `orcasync-windows-amd64.exe`
+- **macOS**: `orcasync-macos-amd64`
+
+Make it executable (Linux/macOS):
+```bash
+chmod +x orcasync-*
+sudo mv orcasync-* /usr/local/bin/orcasync
+```
+
+### Option 2: Install with pip
+
 ```bash
 pip install orcasync
 ```

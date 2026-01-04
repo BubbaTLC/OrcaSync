@@ -97,6 +97,50 @@ pytest
 pytest --cov=orcasync
 ```
 
+## Building Executables
+
+### Local Build with PyInstaller
+
+Build a standalone executable for your platform:
+
+```bash
+# Install PyInstaller
+pip install pyinstaller
+
+# Build using spec file (recommended)
+pyinstaller orcasync.spec
+
+# Or build directly
+pyinstaller --onefile --name orcasync orcasync/cli.py
+
+# Executable will be in dist/
+./dist/orcasync --version
+```
+
+### Multi-Platform Builds with GitHub Actions
+
+The project uses GitHub Actions to automatically build executables for Linux, Windows, and macOS:
+
+- **Workflow**: `.github/workflows/build.yml`
+- **Triggers**: Push to main/develop, pull requests, tags (v*)
+- **Outputs**: Artifacts uploaded for each platform
+
+**To create a release:**
+
+1. Create and push a version tag:
+   ```bash
+   git tag v0.1.0
+   git push origin v0.1.0
+   ```
+
+2. GitHub Actions will automatically:
+   - Build executables for all platforms
+   - Run tests
+   - Create a GitHub release with binaries attached
+
+**Manual workflow trigger:**
+You can also trigger builds manually from the Actions tab in GitHub.
+
 ## Making Changes
 
 ### Workflow
