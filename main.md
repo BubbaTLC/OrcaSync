@@ -51,7 +51,7 @@ OrcaSlicer Profiles  →  Local Git Repo  →  Remote Git Repo
 
 ### For End Users
 
-**Using pip (requires Python 3.8+):**
+**Using pip (requires Python 3.10+):**
 ```bash
 pip install orcasync
 ```

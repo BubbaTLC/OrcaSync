@@ -6,7 +6,7 @@ Thank you for your interest in contributing to OrcaSync! This document provides 
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - Git
 - [UV](https://github.com/astral-sh/uv) - Fast Python package installer (recommended)
 

@@ -6,18 +6,18 @@ This guide covers common issues and their solutions.
 
 ### Python Version Error
 
-**Problem**: `ERROR: orcasync requires Python '>=3.8'`
+**Problem**: `ERROR: orcasync requires Python '>=3.10'`
 
 **Solution**: 
 ```bash
 # Check your Python version
 python --version
 
-# Use Python 3.8+ 
+# Use Python 3.10+ 
 python3 --version
 
 # Install with specific Python version
-python3.10 -m pip install orcasync
+python3.12 -m pip install orcasync
 ```
 
 ### Command Not Found

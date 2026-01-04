@@ -36,18 +36,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       
       - name: Install UV
         uses: astral-sh/setup-uv@v4
       
       - name: Install dependencies
         run: |
-          uv sync --dev
+          uv pip install --system -e '.[dev]'
       
       - name: Build executable with PyInstaller
         run: |
-          uv run pyinstaller --clean orcasync.spec
+          pyinstaller --clean orcasync.spec
       
       - name: Test executable
         run: |
