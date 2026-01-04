@@ -1,231 +1,210 @@
 # OrcaSync
 
-OrcaSync is a tool designed to sync OrcaSlicer profiles between multiple machines using Git as a backend.
-
-Files are stored within a Git repository, allowing users to push and pull changes to their Orca setup easily.
+Sync OrcaSlicer profiles between multiple machines using Git. Configure once per profile with platform-specific paths, and OrcaSync automatically uses the right paths for Windows, macOS, or Linux.
 
 ## Features
 
-- ✅ Cross-platform support (Windows, macOS, Linux)
-- ✅ Git-based synchronization
-- ✅ Automatic profile detection
-- ✅ Per-machine branching
-- ✅ Simple CLI interface
-- ✅ Conflict handling via Git
-- 🚧 GUI interface (planned)
+- Cross-platform: Windows, macOS, Linux, WSL
+- Profile-based configuration with platform detection
+- Git-based sync (HTTPS or SSH)
+- Flexible branching: shared branch or per-machine
+- Automatic OrcaSlicer path detection
 
 ## Installation
 
-### For End Users
-
-**Option 1: Using pip (requires Python 3.8+)**
 ```bash
 pip install orcasync
 ```
 
-**Option 2: Standalone executable (coming soon)**
-
-Download the latest release for your platform from the [releases page](https://github.com/yourusername/orcasync/releases).
-
-### For Developers
-
-```bash
-# Clone repository
-git clone https://github.com/yourusername/orcasync.git
-cd orcasync
-
-# Install in development mode
-pip install -e .
-
-# Or install with dev dependencies
-pip install -e ".[dev]"
-```
-
 ## Quick Start
 
-### 1. Initialize OrcaSync
-
+**First Machine:**
 ```bash
-orcasync init
+orcasync init    # Configure with your Git repo URL
+orcasync push    # Upload profiles
 ```
 
-This will:
-- Create a configuration file
-- Ask for your Git repository URL (optional)
-- Detect your OrcaSlicer profile locations
-- Initialize the local Git repository
-- Create a branch for your machine
-
-### 2. Push Your Profiles
-
-Upload your current OrcaSlicer profiles to the repository (automatically pushes to GitHub):
-
+**Additional Machines:**
 ```bash
-orcasync push
+orcasync init    # Same repo URL
+orcasync pull    # Download profiles
 ```
 
-### 3. Sync Profiles
-
-For the easiest workflow, use `sync` to pull remote changes and push your local changes in one command:
-
+**Daily Usage:**
 ```bash
-orcasync sync
+orcasync sync    # Bidirectional sync (recommended)
 ```
 
-### 4. Pull Profiles on Another Machine
+## Commands
 
-On another machine, after running `orcasync init` with the same repository URL:
+| Command | Description |
+|---------|-------------|
+| `orcasync init` | Initialize configuration and repository |
+| `orcasync push` | Upload profiles to remote (add `-m "message"` for custom commit) |
+| `orcasync pull` | Download profiles from remote |
+| `orcasync sync` | Pull then push (recommended) |
+| `orcasync status` | Show configuration and sync status |
+| `orcasync config-path` | Show config file location |
 
-```bash
-orcasync pull
+**Options:** Use `--profile, -p NAME` to specify a profile, or `--config, -c PATH` for custom config file.
+
+## Profile Configuration
+
+OrcaSync uses profiles to manage platform-specific paths. Define paths once, and OrcaSync automatically selects the right ones for your OS.
+
+### Basic Configuration
+
+**Config location:** `~/.config/orcasync/orcasync-config.yaml` (Linux/macOS) or `%APPDATA%\orcasync\orcasync-config.yaml` (Windows)
+
+```yaml
+default_profile: default
+
+profiles:
+  default:
+    repository_url: https://github.com/you/orca-profiles
+    branch_name: main  # All machines sync to same branch
+    
+    paths:
+      Darwin:  # macOS
+        user_paths:
+          - /Users/you/Library/Application Support/OrcaSlicer/user
+      Windows:
+        user_paths:
+          - C:/Users/you/AppData/Roaming/OrcaSlicer/user
+      Linux:  # Also WSL
+        user_paths:
+          - /home/you/.config/OrcaSlicer/user
 ```
 
-## Usage
+### Multiple Profiles Example
 
-### Commands
+```yaml
+default_profile: home
 
-- `orcasync init` - Initialize configuration and repository
-- `orcasync push` - Upload local profiles to repository and push to remote
-- `orcasync pull` - Download profiles from repository
-- `orcasync sync` - Pull remote changes, then push local changes (recommended)
-- `orcasync status` - Show current sync status
-- `orcasync config-path` - Show path to config file
+profiles:
+  home:
+    repository_url: https://github.com/you/home-profiles
+    branch_name: home
+    paths:
+      Darwin:
+        user_paths: [/Users/you/Library/Application Support/OrcaSlicer/user]
+      Windows:
+        user_paths: [C:/Users/you/AppData/Roaming/OrcaSlicer/user]
+      Linux:
+        user_paths: [/home/you/.config/OrcaSlicer/user]
+  
+  work:
+    repository_url: https://github.com/company/work-profiles
+    branch_name: work
+    paths:
+      # Same structure as home profile
+```
 
-### Configuration
+**Usage:**
+```bash
+orcasync sync              # Uses 'home' (default_profile)
+orcasync sync --profile work   # Uses 'work' profile
+```
 
-The configuration file is located at:
-- Linux/macOS: `~/.config/orcasync/orcasync-config.yaml`
-- Windows: `%APPDATA%\orcasync\orcasync-config.yaml`
+### Branching Strategies
 
-You can also specify a custom config file with the `--config` flag.
+**Shared Branch (Recommended):** All machines sync to same branch
+```yaml
+profiles:
+  default:
+    branch_name: main
+```
 
-#### Configuration Options
+**Per-Machine Branches:** Each machine gets its own branch based on hostname
+```yaml
+profiles:
+  default:
+    # Omit branch_name to use hostname
+    branch_prefix: "machine-"  # Optional prefix
+```
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `repository_url` | Git repository URL | (empty) |
-| `repository_name` | Local repository name | `orca-profiles` |
-| `branch_prefix` | Prefix for branch names | (empty) |
-| `branch_postfix` | Postfix for branch names | (empty) |
-| `user_paths` | Paths to user profiles | Auto-detected |
-| `system_paths` | Paths to system profiles | Auto-detected |
-| `auto_commit` | Auto-commit changes | `true` |
+### WSL Support
 
-## Profile Storage Locations
+From WSL, you can sync Windows OrcaSlicer:
+```yaml
+profiles:
+  default:
+    paths:
+      Linux:  # WSL uses Linux platform
+        user_paths:
+          - /mnt/c/Users/yourname/AppData/Roaming/OrcaSlicer/user
+```
 
-| Operating System | Default User Profile Path |
-|-----------------|---------------------------|
-| Windows | `C:\Users\<username>\AppData\Roaming\OrcaSlicer\user\` |
-| macOS | `~/Library/Application Support/OrcaSlicer/user/` |
-| Linux | `~/.config/OrcaSlicer/user/` |
+## Authentication Setup
 
-## How It Works
+**SSH (Recommended):**
+```bash
+# Generate key
+ssh-keygen -t ed25519 -C "your@email.com"
 
-1. **Per-Machine Branches**: Each machine gets its own Git branch (named after the hostname by default)
-2. **Local Repository**: Profiles are copied to a local Git repository
-3. **Git Sync**: Changes are committed and pushed/pulled using standard Git operations
-4. **Conflict Handling**: Git's merge capabilities handle conflicts when syncing between machines
+# Add to GitHub: Settings → SSH Keys
+cat ~/.ssh/id_ed25519.pub
 
-## Recommended Workflow
+# Use SSH URL in config
+repository_url: git@github.com:username/repo.git
+```
 
-1. **Use Private Repository**: Store your profiles in a private Git repository for security
-2. **Branch per Machine**: Use the default hostname-based branching to avoid conflicts
-3. **Regular Syncs**: Push changes after making profile updates, pull before starting work on another machine
+**HTTPS with Personal Access Token:**
+```yaml
+repository_url: https://TOKEN@github.com/username/repo.git
+```
 
-## Troubleshooting
+**macOS Keychain:**
+```bash
+git config --global credential.helper osxkeychain
+```
 
-### macOS Authentication Issues
-
-If you can push/pull with git manually but get authentication errors with OrcaSync:
-
-1. **Configure the credential helper**:
-   ```bash
-   git config --global credential.helper osxkeychain
-   ```
-
-2. **Use SSH instead of HTTPS** (recommended):
-   - Generate SSH key: `ssh-keygen -t ed25519 -C "your_email@example.com"`
-   - Add to GitHub: Copy `~/.ssh/id_ed25519.pub` to GitHub Settings > SSH Keys
-   - Update repository URL in `~/.config/orcasync/orcasync-config.yaml`:
-     ```yaml
-     repository_url: git@github.com:username/repo.git
-     ```
-
-3. **Test your credentials**:
-   ```bash
-   python test_git_credentials.py
-   ```
-
-4. **Re-authenticate manually**:
-   ```bash
-   cd ~/.local/share/orcasync/orcasync
-   git push  # This will prompt for credentials
-   ```
-
-### Windows Credential Issues
-
-If experiencing authentication problems on Windows:
+**Windows Credential Manager:**
 ```bash
 git config --global credential.helper wincred
 ```
 
-### General Authentication Tips
+## Default Profile Paths
 
-- **Use a Personal Access Token (PAT)** instead of password for HTTPS URLs (GitHub requires this)
-- **Check your Keychain/Credential Manager** for saved credentials
-- **SSH keys are more reliable** than HTTPS for automated tools
+| OS | Default Path |
+|----|-------------|
+| Windows | `C:\Users\<user>\AppData\Roaming\OrcaSlicer\user\` |
+| macOS | `~/Library/Application Support/OrcaSlicer/user/` |
+| Linux | `~/.config/OrcaSlicer/user/` |
+| WSL | `/mnt/c/Users/<user>/AppData/Roaming/OrcaSlicer/user/` |
+
+## Documentation
+
+- **[EXAMPLES.md](EXAMPLES.md)** - Real-world configuration examples
+- **[PROFILES.md](PROFILES.md)** - Detailed profile configuration
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues & solutions
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Developer guide
+- **[main.md](main.md)** - Technical documentation
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
+
+## Troubleshooting
+
+**Authentication errors:** See [TROUBLESHOOTING.md](TROUBLESHOOTING.md#authentication-issues) for platform-specific solutions.
+
+**Profile not found:** Check paths with `orcasync status` or edit config at `orcasync config-path`.
+
+**Merge conflicts:** Resolve in `~/.local/share/orcasync/<repo_name>/` using standard Git tools.
 
 ## Development
 
-### Running Tests
-
 ```bash
-pytest
+git clone https://github.com/yourusername/orcasync.git
+cd orcasync
+pip install -e ".[dev]"
 ```
 
-### Code Formatting
-
-```bash
-black orca_sync/
-```
-
-### Type Checking
-
-```bash
-mypy orca_sync/
-```
-
-## Building Standalone Executables
-
-Coming soon: Instructions for building platform-specific executables using PyInstaller.
-
-## Roadmap
-
-- [x] CLI implementation
-- [x] Basic push/pull functionality
-- [x] Auto-detection of profile paths
-- [ ] Conflict resolution UI
-- [ ] GUI application
-- [ ] Auto-sync on profile changes
-- [ ] Multiple profile sets support
-- [ ] Selective file syncing
-
-## License
-
-MIT License - See LICENSE file for details
-
-## Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Support
 
-- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/yourusername/orcasync/issues)
-- **Discussions**: Join the conversation in [GitHub Discussions](https://github.com/yourusername/orcasync/discussions)
-# Test update
-# Sync test
+- **Issues:** [GitHub Issues](https://github.com/yourusername/orcasync/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/yourusername/orcasync/discussions)
+
+## License
+
+MIT License - See LICENSE file
