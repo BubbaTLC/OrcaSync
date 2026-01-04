@@ -47,7 +47,7 @@ jobs:
       
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --clean orcasync.spec
+          uv run pyinstaller --clean orcasync.spec
       
       - name: Test executable
         run: |

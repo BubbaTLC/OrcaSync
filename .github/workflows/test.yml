@@ -32,10 +32,10 @@ jobs:
       
       - name: Run tests
         run: |
-          pytest -v
+          uv run pytest -v
         continue-on-error: true
       
       - name: Test CLI
         run: |
-          orcasync --version
-          orcasync --help
+          uv run orcasync --version
+          uv run orcasync --help
