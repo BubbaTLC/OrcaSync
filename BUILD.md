@@ -3,8 +3,11 @@
 ## Quick Reference
 
 ```bash
-# Install PyInstaller (first time only)
-pip install pyinstaller
+# Install dependencies using UV (first time only)
+uv pip install pyinstaller
+
+# Or use UV directly
+uv tool install pyinstaller
 
 # Build executable
 pyinstaller --clean orcasync.spec

@@ -26,7 +26,25 @@ chmod +x orcasync-*
 sudo mv orcasync-* /usr/local/bin/orcasync
 ```
 
-### Option 2: Install with pip
+### Option 2: Install with UV (Recommended)
+
+[UV](https://github.com/astral-sh/uv) is a fast Python package installer. Install UV first:
+
+```bash
+# Linux/macOS
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Then install orcasync:
+
+```bash
+uv tool install orcasync
+```
+
+### Option 3: Install with pip
 
 ```bash
 pip install orcasync
@@ -211,7 +229,14 @@ git config --global credential.helper wincred
 ```bash
 git clone https://github.com/yourusername/orcasync.git
 cd orcasync
-pip install -e ".[dev]"
+
+# Install UV if you don't have it
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create virtual environment and install dependencies
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e ".[dev]"
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

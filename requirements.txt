@@ -1,3 +1,12 @@
+# This file is deprecated. Dependencies are now managed in pyproject.toml
+# 
+# To install dependencies, use UV:
+#   uv pip install -e ".[dev]"
+# 
+# Or pip:
+#   pip install -e ".[dev]"
+#
+# Legacy dependencies (for reference only):
 gitpython>=3.1.0
 pyyaml>=6.0
 click>=8.0.0

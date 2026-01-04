@@ -8,7 +8,7 @@ Thank you for your interest in contributing to OrcaSync! This document provides 
 
 - Python 3.8 or higher
 - Git
-- Virtual environment tool (venv, virtualenv, or conda)
+- [UV](https://github.com/astral-sh/uv) - Fast Python package installer (recommended)
 
 ### Local Development Setup
 
@@ -18,15 +18,20 @@ Thank you for your interest in contributing to OrcaSync! This document provides 
    cd orcasync
    ```
 
-2. **Create a virtual environment:**
+2. **Install UV (if not already installed):**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   # Linux/macOS
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   
+   # Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
 
-3. **Install in development mode:**
+3. **Create a virtual environment and install dependencies:**
    ```bash
-   pip install -e ".[dev]"
+   uv venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   uv pip install -e ".[dev]"
    ```
 
 4. **Verify installation:**
@@ -104,8 +109,8 @@ pytest --cov=orcasync
 Build a standalone executable for your platform:
 
 ```bash
-# Install PyInstaller
-pip install pyinstaller
+# Install PyInstaller using UV
+uv pip install pyinstaller
 
 # Build using spec file (recommended)
 pyinstaller orcasync.spec
