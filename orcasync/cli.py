@@ -11,13 +11,14 @@ from rich import print as rprint
 
 from .config import Config
 from .git_ops import GitManager, GitSyncError
+from . import __version__
 
 
 console = Console()
 
 
 @click.group()
-@click.version_option()
+@click.version_option(version=__version__)
 def main():
     """OrcaSync - Sync OrcaSlicer profiles using Git."""
     pass

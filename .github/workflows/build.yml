@@ -44,7 +44,7 @@ jobs:
       
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --onefile --name orcasync orcasync/cli.py
+          pyinstaller --clean orcasync.spec
       
       - name: Test executable
         run: |

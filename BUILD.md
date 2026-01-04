@@ -3,12 +3,15 @@
 ## Quick Reference
 
 ```bash
-# Local build
+# Install PyInstaller (first time only)
 pip install pyinstaller
-pyinstaller orcasync.spec
 
-# Test
+# Build executable
+pyinstaller --clean orcasync.spec
+
+# Test executable
 dist/orcasync --version
+dist/orcasync --help
 ```
 
 ## Automated Builds (GitHub Actions)

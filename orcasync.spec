@@ -1,16 +1,29 @@
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller spec file for OrcaSync
 
+import os
+import sys
+from PyInstaller.utils.hooks import collect_all
+
 block_cipher = None
 
+# Add the project root to the path
+sys.path.insert(0, os.path.abspath('.'))
+
 a = Analysis(
-    ['orcasync/cli.py'],
-    pathex=[],
+    ['orcasync/__main__.py'],
+    pathex=[os.path.abspath('.')],
     binaries=[],
     datas=[],
     hiddenimports=[
+        'orcasync',
+        'orcasync.cli',
+        'orcasync.config',
+        'orcasync.git_ops',
         'click',
         'rich',
+        'rich.console',
+        'rich.table',
         'yaml',
         'git',
         'gitdb',
