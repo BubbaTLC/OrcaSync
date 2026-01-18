@@ -4,11 +4,13 @@ Sync OrcaSlicer profiles between multiple machines using Git. Configure once per
 
 ## Features
 
-- Cross-platform: Windows, macOS, Linux, WSL
-- Profile-based configuration with platform detection
-- Git-based sync (HTTPS or SSH)
-- Flexible branching: shared branch or per-machine
-- Automatic OrcaSlicer path detection
+- **Interactive TUI**: Beautiful terminal user interface for easy operation
+- **Cross-platform**: Windows, macOS, Linux, WSL
+- **Profile-based configuration** with platform detection
+- **Git-based sync** (HTTPS or SSH)
+- **Flexible branching**: shared branch or per-machine
+- **Automatic OrcaSlicer path detection**
+- **CLI commands** available for scripting and automation
 
 ## Installation
 
@@ -52,6 +54,33 @@ pip install orcasync
 
 ## Quick Start
 
+### Using the Interactive TUI (Recommended)
+
+Simply run `orcasync` to launch the interactive terminal interface:
+
+```bash
+orcasync
+```
+
+The TUI provides:
+- **Status Dashboard** - View your current configuration and sync status at a glance
+- **Interactive Menu** - Navigate with arrow keys or use keyboard shortcuts
+- **Real-time Logs** - See exactly what's happening during sync operations
+- **Guided Setup** - Walk through initialization step-by-step
+
+**Keyboard Shortcuts:**
+- `i` - Initialize configuration
+- `p` - Push profiles to remote
+- `P` - Pull profiles from remote  
+- `s` - Sync (pull + push)
+- `r` - Refresh status
+- `c` - Clear logs
+- `q` - Quit
+
+### Using CLI Commands
+
+For automation or scripting, use CLI commands directly:
+
 **First Machine:**
 ```bash
 orcasync init    # Configure with your Git repo URL
@@ -71,8 +100,19 @@ orcasync sync    # Bidirectional sync (recommended)
 
 ## Commands
 
+### Interactive TUI
+
+Run without any arguments to launch the interactive interface:
+
+```bash
+orcasync
+```
+
+### CLI Commands
+
 | Command | Description |
 |---------|-------------|
+| `orcasync` | Launch interactive TUI (default) |
 | `orcasync init` | Initialize configuration and repository |
 | `orcasync push` | Upload profiles to remote (add `-m "message"` for custom commit) |
 | `orcasync pull` | Download profiles from remote |

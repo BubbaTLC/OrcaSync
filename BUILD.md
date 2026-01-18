@@ -95,6 +95,9 @@ hiddenimports=[
     'rich',
     'yaml',
     'git',
+    'textual',
+    'textual.app',
+    'textual.widgets',
     # Add more as needed
 ],
 ```

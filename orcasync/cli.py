@@ -17,11 +17,22 @@ from . import __version__
 console = Console()
 
 
-@click.group()
+@click.group(invoke_without_command=True)
 @click.version_option(version=__version__)
-def main():
-    """OrcaSync - Sync OrcaSlicer profiles using Git."""
-    pass
+@click.option("--config", "-c", type=click.Path(), help="Path to config file")
+@click.option("--profile", "-p", help="Profile name to use")
+@click.pass_context
+def main(ctx, config: Optional[str], profile: Optional[str]):
+    """OrcaSync - Sync OrcaSlicer profiles using Git.
+    
+    Run without arguments to launch the interactive TUI.
+    """
+    # If no subcommand was provided, launch the TUI
+    if ctx.invoked_subcommand is None:
+        from .tui import run_tui
+        config_path = Path(config) if config else None
+        run_tui(config_path, profile)
+        ctx.exit(0)
 
 
 @main.command()
