@@ -54,3 +54,28 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/yourusername/orcasync"
 "Bug Tracker" = "https://github.com/yourusername/orcasync/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--cov=orcasync",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "benchmark: marks tests as benchmark tests",
+]
+# pytest-benchmark settings
+[tool.pytest.ini_options.benchmark]
+max_time = "0.5"
+min_rounds = 5
+calibration_precision = 10
+warmup = true
+disable_gc = true
