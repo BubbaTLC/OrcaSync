@@ -39,6 +39,11 @@ test_venv/
 .pytest_cache/
 .coverage
 htmlcov/
+coverage.xml
+*.spec
+.benchmarks/
+benchmark_results.json
+snapshot_report.html
 
 # Config (don't commit personal configs)
 orcasync-config.yaml

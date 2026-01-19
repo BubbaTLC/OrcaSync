@@ -1,3 +1,9 @@
+---
+description: "Instructions for testing OrcaSync"
+title: "OrcaSync - Testing Guide"
+applyTo: "**/tests/**"
+---
+
 # OrcaSync - Testing Guide
 
 ## Quick Start

@@ -4,38 +4,108 @@ on:
   push:
     branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   test:
-    name: Test on Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    name: Test (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12"]
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       
-      - name: Install UV
+      - name: Install uv
         uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
       
       - name: Install dependencies
-        run: |
-          uv sync --dev
+        run: uv sync --dev
       
-      - name: Run tests
-        run: |
-          uv run pytest -v
-        continue-on-error: true
+      - name: Run tests with coverage
+        run: uv run pytest --cov=orcasync --cov-report=xml --cov-report=term-missing --benchmark-skip
       
-      - name: Test CLI
-        run: |
-          uv run orcasync --version
-          uv run orcasync --help
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: unittests-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+          fail_ci_if_error: false
+  
+  benchmark:
+    name: Benchmarks (Ubuntu, Python 3.11)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      
+      - name: Install dependencies
+        run: uv sync --dev
+      
+      - name: Run benchmarks
+        run: uv run pytest tests/benchmarks/ --benchmark-only --benchmark-autosave
+      
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          name: OrcaSync Benchmarks
+          tool: 'pytest'
+          output-file-path: .benchmarks/Linux-CPython-3.11/latest.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          alert-threshold: '120%'
+          comment-on-alert: true
+          fail-on-alert: false
+  
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      
+      - name: Install dependencies
+        run: uv sync --dev
+      
+      - name: Run black
+        run: uv run black --check orcasync/ tests/
+      
+      - name: Run flake8
+        run: uv run flake8 orcasync/ tests/
+      
+      - name: Run mypy
+        run: uv run mypy orcasync/

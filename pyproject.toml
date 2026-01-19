@@ -49,6 +49,8 @@ dev = [
     "black>=23.0.0",
     "flake8>=6.0.0",
     "mypy>=1.0.0",
+    "types-PyYAML>=6.0.0",
+    "pre-commit>=3.0.0",
     "pyinstaller>=6.0.0",
 ]
 
@@ -67,12 +69,38 @@ addopts = [
     "--cov=orcasync",
     "--cov-report=term-missing",
     "--cov-report=html",
+    "--cov-report=xml",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
     "benchmark: marks tests as benchmark tests",
 ]
+# Coverage thresholds
+[tool.coverage.run]
+source = ["orcasync"]
+omit = [
+    "*/tests/*",
+    "*/conftest.py",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
 # pytest-benchmark settings
 [tool.pytest.ini_options.benchmark]
 max_time = "0.5"
@@ -80,3 +108,43 @@ min_rounds = 5
 calibration_precision = 10
 warmup = true
 disable_gc = true
+
+# Black formatter configuration
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | __pycache__
+)/
+'''
+
+# Flake8 configuration (via setup.cfg or .flake8 file)
+# Note: flake8 doesn't read pyproject.toml natively
+
+# Mypy type checker configuration
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_optional = false
+files = ["orcasync"]
+exclude = [
+    "tests/",
+    "build/",
+    "dist/",
+]
