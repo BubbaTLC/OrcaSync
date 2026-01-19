@@ -99,7 +99,13 @@ jobs:
       - name: Prepare release assets
         run: |
           mkdir -p release-assets
-          find artifacts -type f -exec mv {} release-assets/ \;
+          # Rename artifacts to their platform-specific names
+          mv artifacts/orcasync-linux-amd64/orcasync release-assets/orcasync-linux-amd64
+          mv artifacts/orcasync-windows-amd64.exe/orcasync.exe release-assets/orcasync-windows-amd64.exe
+          mv artifacts/orcasync-macos-x86_64/orcasync release-assets/orcasync-macos-x86_64
+          mv artifacts/orcasync-macos-arm64/orcasync release-assets/orcasync-macos-arm64
+          # Make executables executable
+          chmod +x release-assets/orcasync-*
           ls -lh release-assets/
         shell: bash
       
