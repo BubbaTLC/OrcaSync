@@ -93,9 +93,7 @@ class CompactLogView(Static):
     
     DEFAULT_CSS = """
     CompactLogView {
-        height: 5;
-        border: solid $primary-darken-1;
-        background: $surface-darken-1;
+        height: auto;
         padding: 0 1;
     }
     """
@@ -107,9 +105,9 @@ class CompactLogView(Static):
     def add_log(self, message: str) -> None:
         """Add a log message to the compact view."""
         self.recent_logs.append(message)
-        # Keep only last 5 logs
-        if len(self.recent_logs) > 5:
-            self.recent_logs = self.recent_logs[-5:]
+        # Keep only last 100 logs
+        if len(self.recent_logs) > 100:
+            self.recent_logs = self.recent_logs[-100:]
         self.update("\n".join(self.recent_logs))
     
     def clear_logs(self) -> None:
@@ -238,8 +236,7 @@ class OrcaSyncApp(App[None]):
     
     #status-panel {
         width: 100%;
-        height: auto;
-        max-height: 20;
+        height: 3fr;
         border: solid $accent;
         padding: 1 2;
         margin-bottom: 1;
@@ -250,6 +247,14 @@ class OrcaSyncApp(App[None]):
         width: 100%;
         height: auto;
         align: center middle;
+    }
+    
+    #log-container {
+        width: 100%;
+        height: 7fr;
+        border: solid $primary-darken-1;
+        background: $surface-darken-1;
+        margin-top: 1;
     }
     
     #menu-grid {
@@ -332,8 +337,9 @@ class OrcaSyncApp(App[None]):
                         yield Button("Refresh", id="btn-refresh", variant="default")
                         yield Button("Clear Logs", id="btn-clear", variant="default")
         
-        # Compact log view above footer
-        yield CompactLogView()
+        # Scrollable log view above footer
+        with VerticalScroll(id="log-container"):
+            yield CompactLogView()
         yield Footer()
     
     def on_mount(self) -> None:
