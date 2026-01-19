@@ -1,0 +1,418 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0 -- /Users/bubbachabot/OrcaSync/.venv/bin/python3
+cachedir: .pytest_cache
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/bubbachabot/OrcaSync
+configfile: pyproject.toml
+plugins: benchmark-5.2.3, mock-3.15.1, asyncio-1.3.0, textual-snapshot-1.0.0, cov-7.0.0, syrupy-5.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 227 items
+
+tests/benchmarks/test_path_discovery.py::TestConfigLoadingPerformance::test_config_creation_with_defaults PASSED [  0%]
+tests/benchmarks/test_path_discovery.py::TestConfigLoadingPerformance::test_config_loading_from_file PASSED [  0%]
+tests/benchmarks/test_path_discovery.py::TestConfigLoadingPerformance::test_config_loading_with_validation PASSED [  1%]
+tests/benchmarks/test_path_discovery.py::TestConfigLoadingPerformance::test_config_save_performance PASSED [  1%]
+tests/benchmarks/test_path_discovery.py::TestConfigLoadingPerformance::test_config_multiple_property_access PASSED [  2%]
+tests/benchmarks/test_path_discovery.py::TestPathDiscoveryPerformance::test_discover_orcaslicer_paths PASSED [  2%]
+tests/benchmarks/test_path_discovery.py::TestPathDiscoveryPerformance::test_discover_with_filesystem_check PASSED [  3%]
+tests/benchmarks/test_path_discovery.py::TestConfigComplexOperations::test_config_full_workflow PASSED [  3%]
+tests/benchmarks/test_path_discovery.py::TestConfigComplexOperations::test_config_with_large_path_list PASSED [  3%]
+tests/benchmarks/test_path_discovery.py::TestConfigComplexOperations::test_list_profiles_performance PASSED [  4%]
+tests/benchmarks/test_path_discovery.py::TestConfigComplexOperations::test_profile_switching_performance PASSED [  4%]
+tests/benchmarks/test_path_discovery.py::TestConfigEdgeCases::test_missing_config_file_handling PASSED [  5%]
+tests/benchmarks/test_path_discovery.py::TestConfigEdgeCases::test_config_with_unicode_paths PASSED [  5%]
+tests/benchmarks/test_sync_performance.py::TestSyncPerformance::test_sync_small_profile PASSED [  6%]
+tests/benchmarks/test_sync_performance.py::TestSyncPerformance::test_sync_medium_profile PASSED [  6%]
+tests/benchmarks/test_sync_performance.py::TestSyncPerformance::test_sync_large_profile PASSED [  7%]
+tests/benchmarks/test_sync_performance.py::TestSyncPerformance::test_sync_multiple_paths PASSED [  7%]
+tests/benchmarks/test_sync_performance.py::TestCommitPerformance::test_commit_small_changes PASSED [  7%]
+tests/benchmarks/test_sync_performance.py::TestCommitPerformance::test_commit_medium_changes PASSED [  8%]
+tests/benchmarks/test_sync_performance.py::TestCommitPerformance::test_commit_large_changes PASSED [  8%]
+tests/benchmarks/test_sync_performance.py::TestRestorePerformance::test_restore_medium_profile PASSED [  9%]
+tests/test_cli.py::TestMainGroup::test_version_option PASSED             [  9%]
+tests/test_cli.py::TestMainGroup::test_no_command_launches_tui PASSED    [ 10%]
+tests/test_cli.py::TestMainGroup::test_no_command_with_config_option PASSED [ 10%]
+tests/test_cli.py::TestMainGroup::test_no_command_with_profile_option PASSED [ 11%]
+tests/test_cli.py::TestInitCommand::test_init_first_time PASSED          [ 11%]
+tests/test_cli.py::TestInitCommand::test_init_with_existing_config_cancel PASSED [ 11%]
+tests/test_cli.py::TestInitCommand::test_init_with_existing_config_overwrite PASSED [ 12%]
+tests/test_cli.py::TestInitCommand::test_init_with_custom_paths PASSED   [ 12%]
+tests/test_cli.py::TestInitCommand::test_init_git_error PASSED           [ 13%]
+tests/test_cli.py::TestInitCommand::test_init_with_discovered_paths PASSED [ 13%]
+tests/test_cli.py::TestPushCommand::test_push_success PASSED             [ 14%]
+tests/test_cli.py::TestPushCommand::test_push_no_changes PASSED          [ 14%]
+tests/test_cli.py::TestPushCommand::test_push_no_repo_url_cancel PASSED  [ 14%]
+tests/test_cli.py::TestPushCommand::test_push_no_repo_url_continue PASSED [ 15%]
+tests/test_cli.py::TestPushCommand::test_push_with_custom_message PASSED [ 15%]
+tests/test_cli.py::TestPushCommand::test_push_git_error PASSED           [ 16%]
+tests/test_cli.py::TestPushCommand::test_push_push_error_continues PASSED [ 16%]
+tests/test_cli.py::TestPushCommand::test_push_with_config_option PASSED  [ 17%]
+tests/test_cli.py::TestPullCommand::test_pull_success PASSED             [ 17%]
+tests/test_cli.py::TestPullCommand::test_pull_no_changes PASSED          [ 18%]
+tests/test_cli.py::TestPullCommand::test_pull_no_repo_url PASSED         [ 18%]
+tests/test_cli.py::TestPullCommand::test_pull_git_error PASSED           [ 18%]
+tests/test_cli.py::TestPullCommand::test_pull_with_profile_option PASSED [ 19%]
+tests/test_cli.py::TestSyncCommand::test_sync_full_workflow PASSED       [ 19%]
+tests/test_cli.py::TestSyncCommand::test_sync_no_remote PASSED           [ 20%]
+tests/test_cli.py::TestSyncCommand::test_sync_with_local_changes_before_pull PASSED [ 20%]
+tests/test_cli.py::TestSyncCommand::test_sync_pushes_commits_ahead PASSED [ 21%]
+tests/test_cli.py::TestSyncCommand::test_sync_no_repo_url PASSED         [ 21%]
+tests/test_cli.py::TestSyncCommand::test_sync_git_error PASSED           [ 22%]
+tests/test_cli.py::TestSyncCommand::test_sync_push_error_continues PASSED [ 22%]
+tests/test_cli.py::TestStatusCommand::test_status_basic PASSED           [ 22%]
+tests/test_cli.py::TestStatusCommand::test_status_with_profile PASSED    [ 23%]
+tests/test_cli.py::TestStatusCommand::test_status_with_existing_paths PASSED [ 23%]
+tests/test_cli.py::TestStatusCommand::test_status_with_repository PASSED [ 24%]
+tests/test_cli.py::TestStatusCommand::test_status_no_repository PASSED   [ 24%]
+tests/test_cli.py::TestConfigPathCommand::test_config_path_default PASSED [ 25%]
+tests/test_cli.py::TestConfigPathCommand::test_config_path_with_custom_config PASSED [ 25%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_windows_standard_paths PASSED [ 25%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_windows_additional_locations PASSED [ 26%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_macos_standard_paths PASSED [ 26%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_macos_additional_locations PASSED [ 27%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_linux_standard_paths PASSED [ 27%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_linux_additional_locations PASSED [ 28%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_no_duplicates PASSED [ 28%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_nonexistent_paths PASSED [ 29%]
+tests/test_config.py::TestDiscoverOrcaSlicerPaths::test_discover_unknown_platform PASSED [ 29%]
+tests/test_config.py::TestConfigInitialization::test_init_with_explicit_path PASSED [ 29%]
+tests/test_config.py::TestConfigInitialization::test_init_finds_config_in_current_dir PASSED [ 30%]
+tests/test_config.py::TestConfigInitialization::test_init_finds_config_in_user_config_dir PASSED [ 30%]
+tests/test_config.py::TestConfigInitialization::test_init_with_profile_name PASSED [ 31%]
+tests/test_config.py::TestConfigInitialization::test_init_uses_default_profile PASSED [ 31%]
+tests/test_config.py::TestConfigFileLoading::test_load_valid_yaml PASSED [ 32%]
+tests/test_config.py::TestConfigFileLoading::test_load_empty_yaml PASSED [ 32%]
+tests/test_config.py::TestConfigFileLoading::test_load_invalid_yaml_raises_error PASSED [ 33%]
+tests/test_config.py::TestConfigFileLoading::test_load_nonexistent_file_returns_defaults PASSED [ 33%]
+tests/test_config.py::TestConfigFileLoading::test_load_yaml_with_comments PASSED [ 33%]
+tests/test_config.py::TestConfigFileLoading::test_load_yaml_with_nested_structures PASSED [ 34%]
+tests/test_config.py::TestDefaultConfiguration::test_default_config_structure PASSED [ 34%]
+tests/test_config.py::TestDefaultConfiguration::test_default_config_platform_paths PASSED [ 35%]
+tests/test_config.py::TestDefaultConfiguration::test_default_config_uses_discovered_paths PASSED [ 35%]
+tests/test_config.py::TestDefaultConfiguration::test_default_config_disables_system_paths PASSED [ 36%]
+tests/test_config.py::TestProfileMerging::test_profile_overrides_base_config PASSED [ 36%]
+tests/test_config.py::TestProfileMerging::test_profile_merges_platform_paths PASSED [ 37%]
+tests/test_config.py::TestProfileMerging::test_profile_nonexistent_raises_error PASSED [ 37%]
+tests/test_config.py::TestProfileMerging::test_profile_no_paths_for_platform PASSED [ 37%]
+tests/test_config.py::TestProfileMerging::test_profile_without_paths_section PASSED [ 38%]
+tests/test_config.py::TestProfileMerging::test_no_profile_returns_base_config PASSED [ 38%]
+tests/test_config.py::TestConfigSaving::test_save_creates_parent_directories PASSED [ 39%]
+tests/test_config.py::TestConfigSaving::test_save_writes_yaml PASSED     [ 39%]
+tests/test_config.py::TestConfigSaving::test_save_preserves_structure PASSED [ 40%]
+tests/test_config.py::TestConfigGettersSetters::test_get_existing_key PASSED [ 40%]
+tests/test_config.py::TestConfigGettersSetters::test_get_nonexistent_key_returns_default PASSED [ 40%]
+tests/test_config.py::TestConfigGettersSetters::test_set_updates_data PASSED [ 41%]
+tests/test_config.py::TestConfigGettersSetters::test_set_overwrites_existing PASSED [ 41%]
+tests/test_config.py::TestConfigProperties::test_repository_url_property PASSED [ 42%]
+tests/test_config.py::TestConfigProperties::test_repository_url_property_empty PASSED [ 42%]
+tests/test_config.py::TestConfigProperties::test_repository_name_property PASSED [ 43%]
+tests/test_config.py::TestConfigProperties::test_repository_name_property_default PASSED [ 43%]
+tests/test_config.py::TestConfigProperties::test_branch_name_property_explicit PASSED [ 44%]
+tests/test_config.py::TestConfigProperties::test_branch_name_property_from_hostname PASSED [ 44%]
+tests/test_config.py::TestConfigProperties::test_branch_name_property_hostname_only PASSED [ 44%]
+tests/test_config.py::TestConfigProperties::test_user_paths_property PASSED [ 45%]
+tests/test_config.py::TestConfigProperties::test_user_paths_property_empty PASSED [ 45%]
+tests/test_config.py::TestConfigProperties::test_system_paths_property PASSED [ 46%]
+tests/test_config.py::TestConfigProperties::test_system_paths_property_empty PASSED [ 46%]
+tests/test_config.py::TestConfigProperties::test_sync_paths_property_combines_both PASSED [ 47%]
+tests/test_config.py::TestConfigProperties::test_sync_paths_property_empty PASSED [ 47%]
+tests/test_config.py::TestListProfiles::test_list_profiles_multiple PASSED [ 48%]
+tests/test_config.py::TestListProfiles::test_list_profiles_single PASSED [ 48%]
+tests/test_config.py::TestListProfiles::test_list_profiles_empty PASSED  [ 48%]
+tests/test_config.py::TestPlatformDetection::test_windows_default_paths PASSED [ 49%]
+tests/test_config.py::TestPlatformDetection::test_macos_default_paths PASSED [ 49%]
+tests/test_config.py::TestPlatformDetection::test_linux_default_paths PASSED [ 50%]
+tests/test_config.py::TestEdgeCases::test_config_with_null_values PASSED [ 50%]
+tests/test_config.py::TestEdgeCases::test_config_with_unicode_characters PASSED [ 51%]
+tests/test_config.py::TestEdgeCases::test_config_with_special_path_characters PASSED [ 51%]
+tests/test_config.py::TestEdgeCases::test_config_with_very_long_values PASSED [ 51%]
+tests/test_config.py::TestEdgeCases::test_discover_with_symlinks PASSED  [ 52%]
+tests/test_git_ops.py::TestGitManagerInit::test_init_creates_instance PASSED [ 52%]
+tests/test_git_ops.py::TestGitManagerInit::test_init_with_pathlib_path PASSED [ 53%]
+tests/test_git_ops.py::TestGitManagerInit::test_init_with_empty_url PASSED [ 53%]
+tests/test_git_ops.py::TestConfigureCredentials::test_configure_credentials_macos PASSED [ 54%]
+tests/test_git_ops.py::TestConfigureCredentials::test_configure_credentials_windows PASSED [ 54%]
+tests/test_git_ops.py::TestConfigureCredentials::test_configure_credentials_linux PASSED [ 55%]
+tests/test_git_ops.py::TestConfigureCredentials::test_configure_credentials_no_repo PASSED [ 55%]
+tests/test_git_ops.py::TestConfigureCredentials::test_configure_credentials_handles_exception PASSED [ 55%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_opens_existing_valid_repo PASSED [ 56%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_updates_remote_url_if_changed PASSED [ 56%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_adds_remote_if_missing PASSED [ 57%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_handles_invalid_repo PASSED [ 57%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_clones_if_not_exists PASSED [ 58%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_clone_failure_raises_error PASSED [ 58%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_creates_new_local_repo_without_url PASSED [ 59%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_creates_initial_commit PASSED [ 59%]
+tests/test_git_ops.py::TestInitRepository::test_init_repository_handles_remote_already_exists PASSED [ 59%]
+tests/test_git_ops.py::TestEnsureBranch::test_ensure_branch_raises_if_no_repo PASSED [ 60%]
+tests/test_git_ops.py::TestEnsureBranch::test_ensure_branch_creates_local_branch_if_missing PASSED [ 60%]
+tests/test_git_ops.py::TestEnsureBranch::test_ensure_branch_creates_from_remote_if_exists PASSED [ 61%]
+tests/test_git_ops.py::TestEnsureBranch::test_ensure_branch_handles_fetch_failure PASSED [ 61%]
+tests/test_git_ops.py::TestEnsureBranch::test_ensure_branch_checks_out_existing_branch PASSED [ 62%]
+tests/test_git_ops.py::TestSyncFiles::test_sync_files_raises_if_no_repo PASSED [ 62%]
+tests/test_git_ops.py::TestSyncFiles::test_sync_files_copies_directory_tree PASSED [ 62%]
+tests/test_git_ops.py::TestSyncFiles::test_sync_files_replaces_existing_directory PASSED [ 63%]
+tests/test_git_ops.py::TestSyncFiles::test_sync_files_skips_nonexistent_source PASSED [ 63%]
+tests/test_git_ops.py::TestSyncFiles::test_sync_files_handles_multiple_sources PASSED [ 64%]
+tests/test_git_ops.py::TestSyncFiles::test_sync_files_custom_target_subdir PASSED [ 64%]
+tests/test_git_ops.py::TestRestoreFiles::test_restore_files_raises_if_no_repo PASSED [ 65%]
+tests/test_git_ops.py::TestRestoreFiles::test_restore_files_returns_empty_if_source_missing PASSED [ 65%]
+tests/test_git_ops.py::TestRestoreFiles::test_restore_files_copies_directory_tree PASSED [ 66%]
+tests/test_git_ops.py::TestRestoreFiles::test_restore_files_replaces_existing_directory PASSED [ 66%]
+tests/test_git_ops.py::TestRestoreFiles::test_restore_files_creates_parent_directories PASSED [ 66%]
+tests/test_git_ops.py::TestRestoreFiles::test_restore_files_skips_missing_source_subdirs PASSED [ 67%]
+tests/test_git_ops.py::TestCommitChanges::test_commit_changes_raises_if_no_repo PASSED [ 67%]
+tests/test_git_ops.py::TestCommitChanges::test_commit_changes_returns_false_if_nothing_to_commit PASSED [ 68%]
+tests/test_git_ops.py::TestCommitChanges::test_commit_changes_commits_dirty_files PASSED [ 68%]
+tests/test_git_ops.py::TestCommitChanges::test_commit_changes_commits_untracked_files PASSED [ 69%]
+tests/test_git_ops.py::TestCommitChanges::test_commit_changes_uses_custom_message PASSED [ 69%]
+tests/test_git_ops.py::TestCommitChanges::test_commit_changes_generates_timestamp_in_message PASSED [ 70%]
+tests/test_git_ops.py::TestPush::test_push_raises_if_no_repo PASSED      [ 70%]
+tests/test_git_ops.py::TestPush::test_push_raises_if_no_remote PASSED    [ 70%]
+tests/test_git_ops.py::TestPush::test_push_sets_upstream_on_first_push PASSED [ 71%]
+tests/test_git_ops.py::TestPush::test_push_regular_push_with_tracking PASSED [ 71%]
+tests/test_git_ops.py::TestPush::test_push_disables_terminal_prompts PASSED [ 72%]
+tests/test_git_ops.py::TestPush::test_push_handles_error_flag PASSED     [ 72%]
+tests/test_git_ops.py::TestPush::test_push_handles_rejected_flag PASSED  [ 73%]
+tests/test_git_ops.py::TestPush::test_push_authentication_error_message PASSED [ 73%]
+tests/test_git_ops.py::TestPush::test_push_authentication_error_macos_help PASSED [ 74%]
+tests/test_git_ops.py::TestPush::test_push_404_error_message PASSED      [ 74%]
+tests/test_git_ops.py::TestPush::test_push_non_fast_forward_error PASSED [ 74%]
+tests/test_git_ops.py::TestPull::test_pull_raises_if_no_repo PASSED      [ 75%]
+tests/test_git_ops.py::TestPull::test_pull_raises_if_no_remote PASSED    [ 75%]
+tests/test_git_ops.py::TestPull::test_pull_with_no_changes PASSED        [ 76%]
+tests/test_git_ops.py::TestPull::test_pull_with_changes PASSED           [ 76%]
+tests/test_git_ops.py::TestPull::test_pull_uses_rebase_strategy PASSED   [ 77%]
+tests/test_git_ops.py::TestPull::test_pull_falls_back_to_merge_on_divergent_branches PASSED [ 77%]
+tests/test_git_ops.py::TestPull::test_pull_raises_on_merge_failure PASSED [ 77%]
+tests/test_git_ops.py::TestPull::test_pull_general_error PASSED          [ 78%]
+tests/test_git_ops.py::TestGetStatus::test_get_status_not_initialized PASSED [ 78%]
+tests/test_git_ops.py::TestGetStatus::test_get_status_clean_repo PASSED  [ 79%]
+tests/test_git_ops.py::TestGetStatus::test_get_status_dirty_repo PASSED  [ 79%]
+tests/test_integration.py::TestBasicGitWorkflow::test_init_new_repository PASSED [ 80%]
+tests/test_integration.py::TestBasicGitWorkflow::test_init_existing_repository PASSED [ 80%]
+tests/test_integration.py::TestBasicGitWorkflow::test_clone_from_remote PASSED [ 81%]
+tests/test_integration.py::TestBasicGitWorkflow::test_branch_creation PASSED [ 81%]
+tests/test_integration.py::TestFileSyncOperations::test_sync_single_directory PASSED [ 81%]
+tests/test_integration.py::TestFileSyncOperations::test_sync_multiple_directories PASSED [ 82%]
+tests/test_integration.py::TestFileSyncOperations::test_sync_updates_existing_files PASSED [ 82%]
+tests/test_integration.py::TestFileSyncOperations::test_restore_files PASSED [ 83%]
+tests/test_integration.py::TestCommitOperations::test_commit_with_changes PASSED [ 83%]
+tests/test_integration.py::TestCommitOperations::test_commit_no_changes PASSED [ 84%]
+tests/test_integration.py::TestCommitOperations::test_commit_with_custom_message PASSED [ 84%]
+tests/test_integration.py::TestPushPullOperations::test_push_to_remote PASSED [ 85%]
+tests/test_integration.py::TestPushPullOperations::test_pull_from_remote PASSED [ 85%]
+tests/test_integration.py::TestPushPullOperations::test_pull_with_no_changes PASSED [ 85%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_full_push_workflow PASSED [ 86%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_full_pull_workflow PASSED [ 86%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_sync_workflow_with_conflicts PASSED [ 87%]
+tests/test_integration.py::TestFullWorkflowIntegration::test_multi_path_sync PASSED [ 87%]
+tests/test_integration.py::TestErrorHandling::test_sync_nonexistent_source PASSED [ 88%]
+tests/test_integration.py::TestErrorHandling::test_push_to_invalid_remote PASSED [ 88%]
+tests/test_integration.py::TestErrorHandling::test_restore_to_readonly_destination PASSED [ 88%]
+tests/test_integration.py::TestConfigIntegration::test_config_with_real_paths PASSED [ 89%]
+tests/test_integration.py::TestConfigIntegration::test_config_sync_paths_integration PASSED [ 89%]
+tests/test_tui_snapshots.py::TestCompactLogViewSnapshots::test_log_view_empty PASSED [ 90%]
+tests/test_tui_snapshots.py::TestCompactLogViewSnapshots::test_log_view_single_message PASSED [ 90%]
+tests/test_tui_snapshots.py::TestCompactLogViewSnapshots::test_log_view_multiple_messages PASSED [ 91%]
+tests/test_tui_snapshots.py::TestCompactLogViewSnapshots::test_log_view_100_plus_messages PASSED [ 91%]
+tests/test_tui_snapshots.py::TestCompactLogViewSnapshots::test_log_view_after_clear PASSED [ 92%]
+tests/test_tui_snapshots.py::TestCompactLogViewSnapshots::test_log_view_rich_formatting PASSED [ 92%]
+tests/test_tui_snapshots.py::TestInitDialogSnapshots::test_init_dialog_auto_detected_paths PASSED [ 92%]
+tests/test_tui_snapshots.py::TestInitDialogSnapshots::test_init_dialog_manual_path_entry PASSED [ 93%]
+tests/test_tui_snapshots.py::TestInitDialogSnapshots::test_init_dialog_filled_form PASSED [ 93%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_initial_state FAILED [ 94%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_with_configured_repo FAILED [ 94%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_with_logs FAILED [ 95%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_navigation FAILED [ 95%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_refresh_action FAILED [ 96%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_clear_logs_action FAILED [ 96%]
+tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_init_dialog_shown PASSED [ 96%]
+tests/test_tui_snapshots.py::TestResponsiveLayout::test_small_terminal PASSED [ 97%]
+tests/test_tui_snapshots.py::TestResponsiveLayout::test_medium_terminal FAILED [ 97%]
+tests/test_tui_snapshots.py::TestResponsiveLayout::test_large_terminal FAILED [ 98%]
+tests/test_tui_snapshots.py::TestResponsiveLayout::test_wide_terminal FAILED [ 98%]
+tests/test_tui_snapshots.py::TestAppEdgeCases::test_app_long_repo_url FAILED [ 99%]
+tests/test_tui_snapshots.py::TestAppEdgeCases::test_app_unicode_in_paths FAILED [ 99%]
+tests/test_tui_snapshots.py::TestAppEdgeCases::test_app_many_paths FAILED [100%]
+ERROR: Coverage failure: total of 75.94 is less than fail-under=80.00
+
+
+=================================== FAILURES ===================================
+_______________ TestOrcaSyncAppSnapshots.test_app_initial_state ________________
+tests/test_tui_snapshots.py:249: in test_app_initial_state
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x111d46e80>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_initial_state0/config/orcasync.yaml'))
+____________ TestOrcaSyncAppSnapshots.test_app_with_configured_repo ____________
+tests/test_tui_snapshots.py:273: in test_app_with_configured_repo
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x111e23d80>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_with_configured_repo0/config/orcasync.yaml'))
+_________________ TestOrcaSyncAppSnapshots.test_app_with_logs __________________
+tests/test_tui_snapshots.py:295: in test_app_with_logs
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x111f5ec00>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), run_before=<function TestOrcaSyncAppSnapshots.test_app_with_logs.<locals>.add_logs at 0x111f5fe20>)
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_with_logs0/config/orcasync.yaml'))
+_________________ TestOrcaSyncAppSnapshots.test_app_navigation _________________
+tests/test_tui_snapshots.py:310: in test_app_navigation
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x1117c3a60>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), press=['right', 'right'])
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_navigation0/config/orcasync.yaml'))
+_______________ TestOrcaSyncAppSnapshots.test_app_refresh_action _______________
+tests/test_tui_snapshots.py:325: in test_app_refresh_action
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x112184360>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), press=['r'])
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_refresh_action0/config/orcasync.yaml'))
+_____________ TestOrcaSyncAppSnapshots.test_app_clear_logs_action ______________
+tests/test_tui_snapshots.py:348: in test_app_clear_logs_action
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x11234bec0>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), run_before=<function TestOrcaSyncAppSnapshots.test_app_clear_logs_action.<locals>.add_then_clear at 0x11234bce0>, press=['c'])
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_clear_logs_action0/config/orcasync.yaml'))
+__________________ TestResponsiveLayout.test_medium_terminal ___________________
+tests/test_tui_snapshots.py:407: in test_medium_terminal
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x112638860>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(100, 30))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_medium_terminal0/config/orcasync.yaml'))
+___________________ TestResponsiveLayout.test_large_terminal ___________________
+tests/test_tui_snapshots.py:421: in test_large_terminal
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x11275a200>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(150, 50))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_large_terminal0/config/orcasync.yaml'))
+___________________ TestResponsiveLayout.test_wide_terminal ____________________
+tests/test_tui_snapshots.py:435: in test_wide_terminal
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x1128ea2a0>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(200, 30))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_wide_terminal0/config/orcasync.yaml'))
+___________________ TestAppEdgeCases.test_app_long_repo_url ____________________
+tests/test_tui_snapshots.py:462: in test_app_long_repo_url
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x1120440e0>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_long_repo_url0/config/orcasync.yaml'))
+__________________ TestAppEdgeCases.test_app_unicode_in_paths __________________
+tests/test_tui_snapshots.py:485: in test_app_unicode_in_paths
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x11264bd80>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_unicode_in_paths0/config/orcasync.yaml'))
+_____________________ TestAppEdgeCases.test_app_many_paths _____________________
+tests/test_tui_snapshots.py:513: in test_app_many_paths
+    assert snap_compare(
+E   AssertionError: assert False
+E    +  where False = <function snap_compare.<locals>.compare at 0x112bcd940>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 50))
+E    +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_many_paths0/config/orcasync.yaml'))
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1428
+  /Users/bubbachabot/OrcaSync/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1428: PytestConfigWarning: Unknown config option: benchmark
+
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+.venv/lib/python3.12/site-packages/pytest_textual_snapshot.py:350
+  /Users/bubbachabot/OrcaSync/.venv/lib/python3.12/site-packages/pytest_textual_snapshot.py:350: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now=datetime.utcnow(),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.12-final-0 _______________
+
+Name                   Stmts   Miss   Cover   Missing
+-----------------------------------------------------
+orcasync/__init__.py       1      0 100.00%
+orcasync/__main__.py       1      1   0.00%   3
+orcasync/cli.py          278     48  82.73%   63, 66, 69-70, 156-158, 198-200, 277, 291-293, 344-345, 354, 358-367, 381-415
+orcasync/config.py       119      0 100.00%
+orcasync/git_ops.py      192      8  95.83%   107-110, 134, 296, 298, 329
+orcasync/tui.py          315    161  48.89%   59-79, 182-215, 220, 376, 380, 384, 389, 394, 399, 404, 409, 414, 424-442, 447-486, 491-523, 528-607, 612-613
+-----------------------------------------------------
+TOTAL                    906    218  75.94%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+FAIL Required test coverage of 80.0% not reached. Total coverage: 75.94%
+--------------------------- snapshot report summary ----------------------------
+12 snapshots failed. 11 snapshots passed.
+[1;31mTextual Snapshot Report[0m
+
+[1;30;41m12[0m[30;41m mismatched snapshots[0m
+
+[1mView the [0m]8;id=215239;file:///Users/bubbachabot/OrcaSync/snapshot_report.html\[1mfailure report[0m]8;;\[1m.[0m
+
+[2;35m/Users/bubbachabot/OrcaSync/[0m[2;95msnapshot_report.html[0m
+
+
+--------------------------------------------------------------------------------------------------------------- benchmark: 21 tests ---------------------------------------------------------------------------------------------------------------
+Name (time in us)                                   Min                       Max                      Mean                 StdDev                    Median                    IQR            Outliers           OPS            Rounds  Iterations
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+test_config_with_large_path_list                 2.1670 (1.0)             59.2080 (1.0)              2.3621 (1.0)           0.6948 (1.0)              2.2920 (1.0)           0.0840 (1.0)      704;1470  423,346.3413 (1.0)       88559           1
+test_config_multiple_property_access            65.7500 (30.34)          168.2500 (2.84)            67.9033 (28.75)         4.3145 (6.21)            66.6250 (29.07)         1.8750 (22.32)     413;582   14,726.8299 (0.03)      12513           1
+test_discover_orcaslicer_paths                  68.5420 (31.63)          202.5830 (3.42)            71.4216 (30.24)         6.9346 (9.98)            69.7500 (30.43)         2.3330 (27.78)     165;299   14,001.3648 (0.03)       4728           1
+test_discover_with_filesystem_check             68.7920 (31.75)        1,096.0830 (18.51)           72.0848 (30.52)        14.9716 (21.55)           70.0840 (30.58)         2.5830 (30.75)      98;302   13,872.5465 (0.03)       6173           1
+test_missing_config_file_handling               78.7080 (36.32)          231.4170 (3.91)            82.0393 (34.73)         8.5378 (12.29)           79.9580 (34.89)         2.5420 (30.26)     140;303   12,189.2852 (0.03)       4034           1
+test_config_creation_with_defaults              78.9160 (36.42)        1,096.3750 (18.52)           82.6922 (35.01)        21.9408 (31.58)           80.2500 (35.01)         0.9570 (11.39)      53;450   12,093.0323 (0.03)       2390           1
+test_config_loading_from_file                  489.8750 (226.06)         811.0000 (13.70)          518.5214 (219.51)       30.1567 (43.40)          507.2920 (221.33)       23.9160 (284.74)      89;68    1,928.5605 (0.00)       1106           1
+test_config_loading_with_validation            512.2090 (236.37)         737.7500 (12.46)          537.6336 (227.61)       28.7680 (41.41)          526.7500 (229.82)       23.3233 (277.68)     135;90    1,860.0028 (0.00)       1407           1
+test_config_save_performance                   721.4580 (332.93)       1,121.2500 (18.94)          771.2767 (326.52)       38.7669 (55.80)          761.8335 (332.39)       33.8125 (402.56)     124;60    1,296.5516 (0.00)        872           1
+test_list_profiles_performance                 893.4170 (412.28)       1,172.8340 (19.81)          924.5783 (391.42)       37.4851 (53.95)          909.7295 (396.92)       33.2705 (396.11)      79;45    1,081.5741 (0.00)        724           1
+test_profile_switching_performance           1,086.9170 (501.58)       1,516.9580 (25.62)        1,144.2964 (484.43)       61.3445 (88.29)        1,124.1880 (490.48)       59.0000 (702.43)      80;45      873.8995 (0.00)        730           1
+test_config_with_unicode_paths               3,672.5000 (>1000.0)      4,384.1670 (74.05)        3,866.8949 (>1000.0)     142.4227 (204.99)       3,825.7920 (>1000.0)     200.7505 (>1000.0)      90;2      258.6054 (0.00)        297           1
+test_config_full_workflow                    4,080.0840 (>1000.0)      4,814.2920 (81.31)        4,262.8276 (>1000.0)     150.4804 (216.59)       4,213.9160 (>1000.0)     181.7705 (>1000.0)      52;8      234.5861 (0.00)        221           1
+test_sync_small_profile                     63,602.6250 (>1000.0)     69,618.7080 (>1000.0)     65,805.8587 (>1000.0)   1,774.6610 (>1000.0)     65,458.8755 (>1000.0)   2,863.7490 (>1000.0)       6;0       15.1962 (0.00)         18           1
+test_commit_small_changes                  223,052.7500 (>1000.0)    242,916.5000 (>1000.0)    233,798.0666 (>1000.0)   8,725.7338 (>1000.0)    236,117.0420 (>1000.0)  15,589.9688 (>1000.0)       2;0        4.2772 (0.00)          5           1
+test_commit_medium_changes                 226,116.0830 (>1000.0)    320,937.2090 (>1000.0)    248,225.6418 (>1000.0)  40,745.4809 (>1000.0)    230,673.3340 (>1000.0)  27,182.4683 (>1000.0)       1;1        4.0286 (0.00)          5           1
+test_commit_large_changes                  236,195.1250 (>1000.0)    247,256.7090 (>1000.0)    242,994.2336 (>1000.0)   4,553.7285 (>1000.0)    245,442.5830 (>1000.0)   6,523.0212 (>1000.0)       1;0        4.1153 (0.00)          5           1
+test_restore_medium_profile                253,635.8330 (>1000.0)    275,853.4170 (>1000.0)    261,859.7500 (>1000.0)   7,688.2520 (>1000.0)    261,439.0415 (>1000.0)   6,156.5010 (>1000.0)       2;1        3.8188 (0.00)          6           1
+test_sync_medium_profile                   322,848.9580 (>1000.0)    331,310.0830 (>1000.0)    326,878.5914 (>1000.0)   3,144.2528 (>1000.0)    326,738.9160 (>1000.0)   4,132.0312 (>1000.0)       2;0        3.0592 (0.00)          5           1
+test_sync_multiple_paths                   591,644.5830 (>1000.0)    603,657.2920 (>1000.0)    596,847.3166 (>1000.0)   5,546.0440 (>1000.0)    594,770.7080 (>1000.0)  10,131.5523 (>1000.0)       1;0        1.6755 (0.00)          5           1
+test_sync_large_profile                  1,296,216.1250 (>1000.0)  1,314,685.3330 (>1000.0)  1,304,544.6998 (>1000.0)   7,934.9296 (>1000.0)  1,301,723.6250 (>1000.0)  13,566.3650 (>1000.0)       2;0        0.7666 (0.00)          5           1
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legend:
+  Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
+  OPS: Operations Per Second, computed as 1 / Mean
+=========================== short test summary info ============================
+FAILED tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_initial_state - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x111d46e80>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_initial_state0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_with_configured_repo - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x111e23d80>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_with_configured_repo0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_with_logs - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x111f5ec00>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), run_before=<function TestOrcaSyncAppSnapshots.test_app_with_logs.<locals>.add_logs at 0x111f5fe20>)
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_with_logs0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_navigation - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x1117c3a60>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), press=['right', 'right'])
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_navigation0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_refresh_action - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x112184360>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), press=['r'])
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_refresh_action0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestOrcaSyncAppSnapshots::test_app_clear_logs_action - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x11234bec0>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40), run_before=<function TestOrcaSyncAppSnapshots.test_app_clear_logs_action.<locals>.add_then_clear at 0x11234bce0>, press=['c'])
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_clear_logs_action0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestResponsiveLayout::test_medium_terminal - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x112638860>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(100, 30))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_medium_terminal0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestResponsiveLayout::test_large_terminal - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x11275a200>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(150, 50))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_large_terminal0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestResponsiveLayout::test_wide_terminal - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x1128ea2a0>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(200, 30))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_wide_terminal0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestAppEdgeCases::test_app_long_repo_url - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x1120440e0>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_long_repo_url0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestAppEdgeCases::test_app_unicode_in_paths - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x11264bd80>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 40))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_unicode_in_paths0/config/orcasync.yaml'))
+FAILED tests/test_tui_snapshots.py::TestAppEdgeCases::test_app_many_paths - AssertionError: assert False
+ +  where False = <function snap_compare.<locals>.compare at 0x112bcd940>(OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}), terminal_size=(120, 50))
+ +    where OrcaSyncApp(title='OrcaSync', classes={'-dark-mode'}, pseudo_classes={'focus', 'dark'}) = OrcaSyncApp(config_path=PosixPath('/private/var/folders/j5/zlqs98bj09x6vsy_w6pzdy0c0000gn/T/pytest-of-bubbachabot/pytest-36/test_app_many_paths0/config/orcasync.yaml'))
+============ 12 failed, 215 passed, 2 warnings in 62.91s (0:01:02) =============
