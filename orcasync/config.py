@@ -65,23 +65,11 @@ class Config:
                 Path("/Applications/OrcaSlicer.app/Contents/Resources") / "profiles",
             ])
         elif system == "Linux":
-            # Check additional Linux locations including WSL
+            # Check additional Linux locations
             search_locations.extend([
                 Path.home() / ".local" / "share" / "OrcaSlicer",
                 Path.home() / "OrcaSlicer",
             ])
-            
-            # WSL-specific: Check Windows paths if running in WSL
-            if Path("/mnt/c").exists():
-                # Try to find Windows user directory
-                windows_users = Path("/mnt/c/Users")
-                if windows_users.exists():
-                    for user_dir in windows_users.iterdir():
-                        if user_dir.is_dir():
-                            search_locations.extend([
-                                user_dir / "AppData" / "Roaming" / "OrcaSlicer",
-                                user_dir / "AppData" / "Local" / "OrcaSlicer",
-                            ])
         
         # Search additional locations
         for base_path in search_locations:

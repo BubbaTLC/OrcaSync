@@ -281,6 +281,10 @@ orcasync push --profile home
 
 ## WSL-Specific Issues
 
+### Automatic WSL Path Detection Removed
+
+**Important Note:** Starting with v0.2.1, automatic WSL path detection has been removed to simplify the codebase and improve maintainability. WSL users must now manually configure their paths.
+
 ### Can't Access Windows Paths
 
 **Problem**: Windows OrcaSlicer paths not accessible from WSL
@@ -293,11 +297,99 @@ ls /mnt/c/
 # Find Windows username
 ls /mnt/c/Users/
 
-# Use correct path in config
-user_paths:
-  - /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/user
+# Verify OrcaSlicer directory exists
+ls /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/
 
-# Check permissions
+# Manually configure in config file
+nano ~/.config/orcasync/orcasync-config.yaml
+
+# Add the Windows path under Linux platform (WSL uses Linux platform detection):
+profiles:
+  default:
+    paths:
+      Linux:
+        user_paths:
+          - /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/user
+
+# Check permissions (files should be readable)
+ls -la /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/user/
+```
+
+### WSL Path Configuration Examples
+
+**Using Windows OrcaSlicer from WSL:**
+```yaml
+profiles:
+  default:
+    repository_url: https://github.com/username/orca-profiles.git
+    branch_name: main
+    paths:
+      Linux:  # WSL reports as Linux
+        user_paths:
+          - /mnt/c/Users/JohnDoe/AppData/Roaming/OrcaSlicer/user
+        system_paths: []
+```
+
+**Using Linux OrcaSlicer in WSL:**
+```yaml
+profiles:
+  default:
+    repository_url: https://github.com/username/orca-profiles.git
+    branch_name: main
+    paths:
+      Linux:
+        user_paths:
+          - /home/johndoe/.config/OrcaSlicer/user
+        system_paths: []
+```
+
+**Multi-machine setup with WSL:**
+```yaml
+profiles:
+  windows_machine:
+    repository_url: https://github.com/username/orca-profiles.git
+    branch_name: windows-pc
+    paths:
+      Linux:  # Running from WSL
+        user_paths:
+          - /mnt/c/Users/JohnDoe/AppData/Roaming/OrcaSlicer/user
+  
+  linux_laptop:
+    repository_url: https://github.com/username/orca-profiles.git
+    branch_name: laptop
+    paths:
+      Linux:  # Native Linux
+        user_paths:
+          - /home/johndoe/.config/OrcaSlicer/user
+```
+
+### Finding Your Windows Paths from WSL
+
+**Step 1:** Identify your Windows username
+```bash
+ls /mnt/c/Users/
+```
+
+**Step 2:** Check if OrcaSlicer is installed
+```bash
+# Check Roaming AppData (most common)
+ls /mnt/c/Users/YourUsername/AppData/Roaming/ | grep -i orca
+
+# Check Local AppData (alternative location)
+ls /mnt/c/Users/YourUsername/AppData/Local/ | grep -i orca
+```
+
+**Step 3:** Verify the user profiles directory
+```bash
+ls /mnt/c/Users/YourUsername/AppData/Roaming/OrcaSlicer/user/
+# Should show: default/ and possibly other profile directories
+```
+
+**Step 4:** Update your config
+```bash
+nano ~/.config/orcasync/orcasync-config.yaml
+# Add the full path found above
+```
 ls -la /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/
 ```
 

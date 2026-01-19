@@ -227,14 +227,36 @@ profiles:
 
 ### WSL Support
 
-From WSL, you can sync Windows OrcaSlicer:
+**Important Note:** Starting with v0.2.1, automatic WSL path detection has been removed. WSL users must manually configure their Windows OrcaSlicer paths.
+
+From WSL, you can sync Windows OrcaSlicer profiles by manually specifying the Windows path through the `/mnt/c/` mount point:
+
 ```yaml
 profiles:
   default:
     paths:
-      Linux:  # WSL uses Linux platform
+      Linux:  # WSL uses Linux platform detection
         user_paths:
-          - /mnt/c/Users/yourname/AppData/Roaming/OrcaSlicer/user
+          - /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/user
+```
+
+**Finding your Windows username in WSL:**
+```bash
+# List Windows users
+ls /mnt/c/Users/
+
+# Verify OrcaSlicer directory exists
+ls /mnt/c/Users/YourWindowsUsername/AppData/Roaming/OrcaSlicer/
+```
+
+**Alternative:** Use OrcaSlicer's Linux installation in WSL:
+```yaml
+profiles:
+  default:
+    paths:
+      Linux:
+        user_paths:
+          - /home/yourlinuxusername/.config/OrcaSlicer/user
 ```
 
 ## Authentication Setup
