@@ -66,6 +66,13 @@ jobs:
         run: |
           pyinstaller --clean orcasync.spec
       
+      - name: Code sign macOS executable (ad-hoc)
+        if: runner.os == 'macOS'
+        run: |
+          codesign -s - --force --deep dist/${{ matrix.artifact_name }}
+          codesign -v dist/${{ matrix.artifact_name }}
+        shell: bash
+      
       - name: Test executable
         run: |
           dist/${{ matrix.artifact_name }} --version

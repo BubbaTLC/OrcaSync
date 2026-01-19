@@ -16,16 +16,44 @@ Sync OrcaSlicer profiles between multiple machines using Git. Configure once per
 
 ### Option 1: Standalone Executable (No Python Required)
 
-Download the latest executable for your platform from the [Releases page](https://github.com/yourusername/orcasync/releases):
+Download the latest executable for your platform from the [Releases page](https://github.com/BubbaTLC/OrcaSync/releases):
 
-- **Linux**: `orcasync-linux-amd64`
-- **Windows**: `orcasync-windows-amd64.exe`
-- **macOS**: `orcasync-macos-amd64`
+- **Linux (AMD64)**: `orcasync-linux-amd64`
+- **Windows (AMD64)**: `orcasync-windows-amd64.exe`
+- **macOS Intel (x86_64)**: `orcasync-macos-x86_64`
+- **macOS Apple Silicon (ARM64)**: `orcasync-macos-arm64`
 
-Make it executable (Linux/macOS):
+#### Linux Installation
 ```bash
-chmod +x orcasync-*
-sudo mv orcasync-* /usr/local/bin/orcasync
+chmod +x orcasync-linux-amd64
+sudo mv orcasync-linux-amd64 /usr/local/bin/orcasync
+```
+
+#### macOS Installation
+```bash
+# Download the appropriate version for your Mac
+chmod +x orcasync-macos-*
+sudo mv orcasync-macos-* /usr/local/bin/orcasync
+
+# First time running: macOS will block unsigned apps
+# Right-click the app and select "Open", or run:
+sudo xattr -rd com.apple.quarantine /usr/local/bin/orcasync
+```
+
+**Note for macOS users**: The first time you run the executable, macOS Gatekeeper may block it because it's not signed with an Apple Developer certificate. To allow it:
+
+1. **Method 1** (Recommended): Remove the quarantine attribute:
+   ```bash
+   sudo xattr -rd com.apple.quarantine /usr/local/bin/orcasync
+   ```
+
+2. **Method 2**: Go to System Settings → Privacy & Security, scroll down and click "Open Anyway" next to the blocked app message.
+
+#### Windows Installation
+```powershell
+# Move to a permanent location
+move orcasync-windows-amd64.exe C:\Windows\System32\orcasync.exe
+# Or add the directory containing the executable to your PATH
 ```
 
 ### Option 2: Install with UV (Recommended)
